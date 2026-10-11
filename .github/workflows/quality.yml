@@ -36,9 +36,12 @@ jobs:
           NEXT_PUBLIC_APP_URL: http://localhost:3000
           AIOS_RATE_LIMIT_BACKEND: memory
       - name: Detect committed secrets
-        uses: gitleaks/gitleaks-action@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # Direct full-history scan instead of gitleaks-action@v2: the action
+        # derives its scan range from the push event and emits an invalid
+        # root^..HEAD range on first pushes and force pushes.
+        run: |
+          curl -sSfL "https://github.com/gitleaks/gitleaks/releases/download/v8.24.3/gitleaks_8.24.3_linux_x64.tar.gz" | tar -xz -C /tmp
+          /tmp/gitleaks detect --redact -v --log-opts="--no-merges --first-parent --all"
 
   database:
     runs-on: ubuntu-latest
