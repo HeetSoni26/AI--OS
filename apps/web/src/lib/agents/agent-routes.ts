@@ -24,6 +24,7 @@ import {
 import { z } from "zod";
 import { withAuthenticatedApi, type AuthenticatedApiHandler, type AuthenticatedApiOptions } from "../api/auth";
 import { ApiRequestError } from "../api/errors";
+import { resolveOwnerRecord } from "../api/domain-service";
 import { successResponse, type ApiSuccessOptions } from "../api/response";
 import { idempotencyFingerprint, idempotencyKeySchema } from "@aios/platform";
 import { IdempotencyStatus } from "@aios/data";
@@ -32,8 +33,6 @@ type Database = ReturnType<typeof getDatabaseClient>;
 type DateLike = Date | null | undefined;
 type DecimalLike = { toString(): string } | number | null | undefined;
 type EntityRecord = Record<string, unknown>;
-
-const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 export interface AgentApiServiceContext {
   database: Database;
@@ -86,17 +85,7 @@ export function withAgentApi<TRouteContext = unknown>(
 
 export async function getAgentApiServiceContext(context: AuthContext): Promise<AgentApiServiceContext> {
   const database = getDatabaseClient();
-  const owner = await database.ownerAccount.findFirst({
-    where: {
-      active: true,
-      OR: [
-        ...(UUID_PATTERN.test(context.owner.id) ? [{ authSubject: context.owner.id }] : []),
-        { email: { equals: context.owner.email, mode: "insensitive" as const } },
-      ],
-    },
-    select: { id: true, authSubject: true },
-  });
-  if (!owner) throw new ApiRequestError("FORBIDDEN", "The authenticated owner is not active.", { status: 403 });
+  const owner = await resolveOwnerRecord(database, context.owner.id, context.owner.email);
   return {
     database,
     identity: {

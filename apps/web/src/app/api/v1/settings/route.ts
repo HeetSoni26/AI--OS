@@ -117,8 +117,8 @@ export const GET = withDomainApi(noopMap, async (_request, context) => {
       ownerEmail: owner?.email ?? services.identity.ownerSubject,
       ownerName: process.env.AIOS_OWNER_DISPLAY_NAME ?? "Agency Owner",
       environment: process.env.AIOS_ENVIRONMENT ?? "local",
-      authMode: process.env.AIOS_AUTH_BYPASS === "development-shell" && process.env.NODE_ENV !== "production"
-        ? "development bypass (never active in production)"
+      authMode: process.env.AIOS_AUTH_BYPASS === "development-shell" && (process.env.NODE_ENV !== "production" || process.env.AIOS_DEMO_MODE === "true")
+        ? (process.env.AIOS_DEMO_MODE === "true" ? "public demo mode" : "development bypass (never active in production)")
         : "Supabase session",
       database: "connected",
       agentRuntime: runtime,

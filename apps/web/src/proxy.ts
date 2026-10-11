@@ -8,7 +8,7 @@ export async function proxy(request: NextRequest) {
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set("x-request-id", requestId);
   const isProtected = protectedPrefixes.some((prefix) => request.nextUrl.pathname.startsWith(prefix));
-  const isDevelopmentBypass = process.env.AIOS_AUTH_BYPASS === "development-shell" && process.env.NODE_ENV !== "production";
+  const isDevelopmentBypass = process.env.AIOS_AUTH_BYPASS === "development-shell" && (process.env.NODE_ENV !== "production" || process.env.AIOS_DEMO_MODE === "true");
   const { response, user } = await refreshSupabaseSession(request, requestHeaders);
   response.headers.set("x-request-id", requestId);
 

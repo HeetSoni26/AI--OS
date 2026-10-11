@@ -1,7 +1,7 @@
 import "server-only";
 
 import { redirect } from "next/navigation";
-import { getServerEnv, isSupabaseConfigured } from "@/lib/config/env";
+import { getServerEnv, isDemoModeEnabled, isSupabaseConfigured } from "@/lib/config/env";
 import { isActiveRegisteredOwner } from "@/lib/auth/owner-registry";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -9,7 +9,7 @@ export type OwnerIdentity = { id: string; email: string; displayName: string };
 
 export async function getOwner(accessToken?: string): Promise<OwnerIdentity | null> {
   const env = getServerEnv();
-  if (env.AIOS_AUTH_BYPASS === "development-shell" && process.env.NODE_ENV !== "production") {
+  if (env.AIOS_AUTH_BYPASS === "development-shell" && (process.env.NODE_ENV !== "production" || isDemoModeEnabled())) {
     return { id: "development-owner", email: env.AIOS_OWNER_EMAIL ?? "owner@local.aios", displayName: "Agency Owner" };
   }
   if (!isSupabaseConfigured()) return null;

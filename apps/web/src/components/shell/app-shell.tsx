@@ -38,6 +38,7 @@ type OwnerRecord = {
 type AppShellProps = {
   children: React.ReactNode;
   owner?: OwnerRecord | null;
+  demoMode?: boolean;
 };
 
 export function isFullBleedShellRoute(pathname: string) {
@@ -52,7 +53,7 @@ export function AppShell(props: AppShellProps) {
   );
 }
 
-function AppShellContent({ children, owner }: AppShellProps) {
+function AppShellContent({ children, owner, demoMode }: AppShellProps) {
   const pathname = usePathname();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
@@ -153,6 +154,11 @@ function AppShellContent({ children, owner }: AppShellProps) {
             </div>
           </div>
         </header>
+      {demoMode ? (
+        <div role="status" className="border-b border-amber-300/20 bg-amber-300/[0.06] px-4 py-1.5 text-center text-[10px] uppercase tracking-[0.14em] text-amber-200">
+          Demo workspace - reset on redeploy
+        </div>
+      ) : null}
 
         <aside className={cn("fixed bottom-0 left-0 top-12 z-40 hidden w-16 border-r border-[#2A2E45] bg-[#0C1020] transition-[width] duration-200 md:block", sidebarCollapsed ? "xl:w-16" : "xl:w-60")}>
           <nav aria-label="Primary navigation" className="surface-scrollbar flex h-full flex-col overflow-y-auto p-3">

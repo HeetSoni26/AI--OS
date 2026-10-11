@@ -25,7 +25,7 @@ async function readiness(requestId: string) {
     : false;
   const checks = {
     auth: (isSupabaseConfigured() && (process.env.NODE_ENV !== "production" || isOwnerAccessConfigured()))
-      || (env.AIOS_AUTH_BYPASS === "development-shell" && process.env.NODE_ENV !== "production"),
+      || (env.AIOS_AUTH_BYPASS === "development-shell" && (process.env.NODE_ENV !== "production" || process.env.AIOS_DEMO_MODE === "true")),
     database,
     apiRateLimit: isRateLimitConfigured(),
     platformSecurity: isPlatformSecurityConfigured(),

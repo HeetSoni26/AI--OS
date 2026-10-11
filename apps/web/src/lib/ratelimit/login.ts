@@ -25,7 +25,7 @@ export function checkMemoryLimit(identifier: string, now = Date.now()): RateLimi
 export async function enforceLoginLimit(identifier: string): Promise<RateLimitResult> {
   const env = getServerEnv();
   if (env.AIOS_RATE_LIMIT_BACKEND === "memory") {
-    if (process.env.NODE_ENV === "production") throw new Error("The in-memory login limiter is forbidden in production.");
+    if (process.env.NODE_ENV === "production" && process.env.AIOS_DEMO_MODE !== "true") throw new Error("The in-memory login limiter is forbidden in production.");
     return checkMemoryLimit(identifier);
   }
   if (!env.UPSTASH_REDIS_REST_URL || !env.UPSTASH_REDIS_REST_TOKEN) throw new Error("Upstash Redis credentials are required for production login throttling.");

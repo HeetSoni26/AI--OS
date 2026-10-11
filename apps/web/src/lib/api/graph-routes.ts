@@ -17,10 +17,10 @@ import { idempotencyFingerprint, idempotencyKeySchema } from "@aios/platform";
 import { z } from "zod";
 import { withAuthenticatedApi, type AuthenticatedApiHandler, type AuthenticatedApiOptions } from "./auth";
 import { ApiRequestError, formatZodIssues } from "./errors";
+import { resolveOwnerRecord } from "./domain-service";
 import { queryParamsToObject, type QueryInput } from "./query";
 import { successResponse, type ApiSuccessOptions } from "./response";
 
-const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const IDEMPOTENCY_TTL_MS = 24 * 60 * 60 * 1_000;
 const DEFAULT_ALLOWED_ORIGINS = process.env.AIOS_CORS_ORIGINS ?? process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
 
@@ -77,17 +77,7 @@ export function withGraphApi<TRouteContext = unknown>(
 /** Resolves the auth subject/email to one active database owner before constructing the graph service identity. */
 export async function getGraphApiServiceContext(context: AuthContext): Promise<GraphApiServiceContext> {
   const database = getDatabaseClient();
-  const owner = await database.ownerAccount.findFirst({
-    where: {
-      active: true,
-      OR: [
-        ...(UUID_PATTERN.test(context.owner.id) ? [{ authSubject: context.owner.id }] : []),
-        { email: { equals: context.owner.email, mode: "insensitive" as const } },
-      ],
-    },
-    select: { id: true, authSubject: true },
-  });
-  if (!owner) throw new ApiRequestError("FORBIDDEN", "The authenticated owner is not active.", { status: 403 });
+  const owner = await resolveOwnerRecord(database, context.owner.id, context.owner.email);
   return {
     database,
     identity: {

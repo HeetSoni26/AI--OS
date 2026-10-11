@@ -9,10 +9,11 @@ type ProtectedLayoutProps = Readonly<{
 
 export default async function ProtectedLayout({ children }: ProtectedLayoutProps) {
   const owner = await requireOwner();
+  const demoMode = process.env.AIOS_DEMO_MODE === "true";
 
   return (
     <QueryProvider>
-      <AppShell owner={owner}>
+      <AppShell owner={owner} demoMode={demoMode}>
         <ErrorBoundary>{children}</ErrorBoundary>
       </AppShell>
     </QueryProvider>

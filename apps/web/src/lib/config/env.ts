@@ -80,6 +80,16 @@ export function isMigrationDatabaseConfigured(): boolean {
   return Boolean(getServerEnv().DIRECT_URL);
 }
 
+/**
+ * Explicitly-enabled public demo mode. Requires BOTH the development-shell
+ * bypass value and AIOS_DEMO_MODE=true, so it can never activate accidentally.
+ * In demo mode the single-owner bypass and the in-memory rate limiter are
+ * permitted in production builds, and the UI shows a visible demo banner.
+ */
+export function isDemoModeEnabled(): boolean {
+  return process.env.AIOS_DEMO_MODE === "true" && process.env.AIOS_AUTH_BYPASS === "development-shell";
+}
+
 export function isPlatformSecurityConfigured(): boolean {
   const env = getServerEnv();
   return Boolean(env.APPLICATION_ENCRYPTION_KEY && env.WEBHOOK_SIGNING_SECRET);

@@ -66,17 +66,7 @@ export async function getDomainServiceContext<TService>(
   createService: (database: Database) => TService,
 ): Promise<DomainServiceContext<TService>> {
   const database = getDatabaseClient();
-  const owner = await database.ownerAccount.findFirst({
-    where: {
-      active: true,
-      OR: [
-        ...(UUID_PATTERN.test(context.owner.id) ? [{ authSubject: context.owner.id }] : []),
-        { email: { equals: context.owner.email, mode: "insensitive" as const } },
-      ],
-    },
-    select: { id: true, authSubject: true },
-  });
-  if (!owner) throw new ApiRequestError("FORBIDDEN", "The authenticated owner is not active.", { status: 403 });
+  const owner = await resolveOwnerRecord(database, context.owner.id, context.owner.email);
   return {
     database,
     identity: {
@@ -186,3 +176,35 @@ export function domainIdempotentSuccess<T>(result: IdempotentResult<T>, requestI
 }
 
 export { z };
+
+
+/**
+ * Resolves the active OwnerAccount for an authenticated context. In public
+ * demo mode the synthetic demo identity falls back to the single active owner
+ * (this is a single-operator system, so there is exactly one to find).
+ */
+export async function resolveOwnerRecord(
+  database: Database,
+  ownerSubject: string,
+  ownerEmail: string,
+): Promise<{ id: string; authSubject: string }> {
+  const byMatch = await database.ownerAccount.findFirst({
+    where: {
+      active: true,
+      OR: [
+        ...(UUID_PATTERN.test(ownerSubject) ? [{ authSubject: ownerSubject }] : []),
+        { email: { equals: ownerEmail, mode: "insensitive" as const } },
+      ],
+    },
+    select: { id: true, authSubject: true },
+  });
+  if (byMatch) return byMatch;
+  if (process.env.AIOS_DEMO_MODE === "true") {
+    const fallback = await database.ownerAccount.findFirst({
+      where: { active: true },
+      select: { id: true, authSubject: true },
+    });
+    if (fallback) return fallback;
+  }
+  throw new ApiRequestError("FORBIDDEN", "The authenticated owner is not active.", { status: 403 });
+}

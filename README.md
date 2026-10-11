@@ -127,6 +127,18 @@ tools/                    Roadmap/DOCX generation, OpenAPI drift check, bundle c
 
 ---
 
+## Live demo deploy
+
+The app is a standard Next.js deployment. To host your own public demo (Vercel + any free Postgres with pgvector, e.g. [Neon](https://neon.tech)):
+
+1/6 Linking the Vercel project...
+
+> npx vercel link --yes
+
+The script runs migrations and seeds against the cloud database, sets every environment variable (including generated encryption keys), deploys, and prints the URL.  activates a read/write public demo: auth is bypassed by the explicitly-gated demo owner, an amber "Demo workspace" banner is shown, and the Settings page reports the honest integration posture. Remove the variables (or set ) to require real Supabase login again.
+
+---
+
 ## Verification
 
 ```bash

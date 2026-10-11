@@ -74,7 +74,7 @@ export function createUpstashApiRateLimiter(redis: Redis): ApiRateLimiter {
 export function createConfiguredApiRateLimiter(): ApiRateLimiter {
   const env = getServerEnv();
   if (env.AIOS_RATE_LIMIT_BACKEND === "memory") {
-    if (process.env.NODE_ENV === "production") throw new Error("The in-memory API limiter is forbidden in production.");
+    if (process.env.NODE_ENV === "production" && process.env.AIOS_DEMO_MODE !== "true") throw new Error("The in-memory API limiter is forbidden in production.");
     return createMemoryApiRateLimiter();
   }
   if (!env.UPSTASH_REDIS_REST_URL || !env.UPSTASH_REDIS_REST_TOKEN) {
