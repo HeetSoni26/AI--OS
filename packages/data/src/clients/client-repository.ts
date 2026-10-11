@@ -144,7 +144,7 @@ export class PrismaClientRepository {
           OR c.notes ILIKE ('%' || ${q} || '%')
           OR c.contact_name ILIKE ('%' || ${q} || '%')
           OR c.contact_email ILIKE ('%' || ${q} || '%')
-          OR lower(contact.name) % lower(${q})
+          OR lower(contact.name) OPERATOR(extensions.%) lower(${q})
           OR extensions.similarity(lower(contact.name), lower(${q})) >= 0.2
           OR contact.name ILIKE ('%' || ${q} || '%')
           OR contact.normalized_email ILIKE ('%' || lower(${q}) || '%')

@@ -1,7 +1,9 @@
 import { createHash } from "node:crypto";
 import { createDatabaseClient, EMBEDDING_DIMENSIONS, serializeEmbedding } from "../src/index";
 import {
+  AgentRunStatus,
   AgentStatus,
+  AgentTriggerType,
   AgentType,
   ArtifactStatus,
   ClientStatus,
@@ -42,6 +44,11 @@ const FIXTURE = {
   outbox: "10000000-0000-4000-8000-000000000015",
   export: "10000000-0000-4000-8000-000000000016",
   deletion: "10000000-0000-4000-8000-000000000017",
+  weeklyReporterAgent: "10000000-0000-4000-8000-000000000018",
+  weeklyReporterConfig: "10000000-0000-4000-8000-000000000019",
+  weeklyReporterRun: "10000000-0000-4000-8000-000000000020",
+  outreachWriterAgent: "10000000-0000-4000-8000-000000000021",
+  outreachWriterConfig: "10000000-0000-4000-8000-000000000022",
 } as const;
 
 const GRAPH_IDS: Record<GraphNodeType, string> = {
@@ -180,6 +187,104 @@ async function seedCoreRecords() {
   });
 }
 
+/**
+ * Browser test fixture agents (Part 5): a reporter with one completed
+ * simulated run so cost and success metrics render, and a writer that has
+ * not run yet. Non-operational; clearly labeled synthetic.
+ */
+async function seedAgentFixtures() {
+  const reporterPrompt = "Summarize the agency week from verified workspace records only.";
+  await prisma.agent.upsert({
+    where: { id: FIXTURE.weeklyReporterAgent },
+    update: {},
+    create: {
+      id: FIXTURE.weeklyReporterAgent,
+      name: "Weekly Reporter",
+      description: "Non-operational seed agent used for development and tests.",
+      type: AgentType.REPORTER,
+      status: AgentStatus.IDLE,
+      model: "gpt-4o-mini",
+      systemPrompt: reporterPrompt,
+      temperature: "0.40",
+      totalRuns: 1,
+      totalCostUsd: "0.000773",
+      successRate: "100.00",
+      lastRunAt: new Date("2099-01-01T00:00:00.000Z"),
+      lastRunStatus: AgentRunStatus.SUCCESS,
+    },
+  });
+  await prisma.agentConfigVersion.upsert({
+    where: { agentId_version: { agentId: FIXTURE.weeklyReporterAgent, version: 1 } },
+    update: {},
+    create: {
+      id: FIXTURE.weeklyReporterConfig,
+      agentId: FIXTURE.weeklyReporterAgent,
+      version: 1,
+      model: "gpt-4o-mini",
+      systemPrompt: reporterPrompt,
+      temperature: "0.40",
+      maxTokens: 1024,
+      topP: "1.00",
+      frequencyPenalty: "0.00",
+      changeSummary: "Initial weekly reporter fixture",
+    },
+  });
+  await prisma.agent.update({ where: { id: FIXTURE.weeklyReporterAgent }, data: { currentConfigVersionId: FIXTURE.weeklyReporterConfig } });
+  await prisma.agentRun.upsert({
+    where: { id: FIXTURE.weeklyReporterRun },
+    update: {},
+    create: {
+      id: FIXTURE.weeklyReporterRun,
+      agentId: FIXTURE.weeklyReporterAgent,
+      configVersionId: FIXTURE.weeklyReporterConfig,
+      status: AgentRunStatus.SUCCESS,
+      triggerType: AgentTriggerType.MANUAL,
+      inputText: "Summarize this week.",
+      outputText: "Synthetic weekly summary produced by the simulated provider. No live model was called.",
+      tokensInput: 642,
+      tokensOutput: 1128,
+      costUsd: "0.000773",
+      durationMs: 1240,
+      metadata: { provider: "simulated", simulated: true, finishReason: "stop", model: "gpt-4o-mini", triggerType: "manual" },
+      startedAt: new Date("2099-01-01T00:00:00.000Z"),
+      completedAt: new Date("2099-01-01T00:01:02.000Z"),
+    },
+  });
+
+  const writerPrompt = "Draft concise, evidence-backed client outreach.";
+  await prisma.agent.upsert({
+    where: { id: FIXTURE.outreachWriterAgent },
+    update: {},
+    create: {
+      id: FIXTURE.outreachWriterAgent,
+      name: "Outreach Writer",
+      description: "Non-operational seed agent used for development and tests.",
+      type: AgentType.CONTENT_WRITER,
+      status: AgentStatus.IDLE,
+      model: "gpt-4o-mini",
+      systemPrompt: writerPrompt,
+      temperature: "0.60",
+    },
+  });
+  await prisma.agentConfigVersion.upsert({
+    where: { agentId_version: { agentId: FIXTURE.outreachWriterAgent, version: 1 } },
+    update: {},
+    create: {
+      id: FIXTURE.outreachWriterConfig,
+      agentId: FIXTURE.outreachWriterAgent,
+      version: 1,
+      model: "gpt-4o-mini",
+      systemPrompt: writerPrompt,
+      temperature: "0.60",
+      maxTokens: 1024,
+      topP: "1.00",
+      frequencyPenalty: "0.00",
+      changeSummary: "Initial outreach writer fixture",
+    },
+  });
+  await prisma.agent.update({ where: { id: FIXTURE.outreachWriterAgent }, data: { currentConfigVersionId: FIXTURE.outreachWriterConfig } });
+}
+
 async function seedPlatformRecords() {
   await prisma.integrationConnection.upsert({
     where: { id: FIXTURE.connection },
@@ -295,6 +400,7 @@ async function seedGraph() {
 
 async function main() {
   await seedCoreRecords();
+  await seedAgentFixtures();
   await seedPlatformRecords();
   await seedGraph();
   console.info("Seeded deterministic synthetic Part 2 fixtures.");
