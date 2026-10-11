@@ -1,0 +1,17 @@
+# Extends the default gitleaks rules with targeted allowances for verified
+# placeholders and prose false positives found by the full-history scan.
+# Regexes are matched against the captured secret value.
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Verified placeholders and prose matches (no real credentials)"
+regexes = [
+  # Roadmap prose "SRS dark design tokens: void/surface colors" trips generic-api-key.
+  '''^void/surface$''',
+  # Sequential hex placeholders in apps/web env config test fixtures.
+  '''^0123456789abcdef0123456789abcdef$''',
+  '''^abcdef0123456789abcdef0123456789$''',
+  # Platform crypto test placeholder string.
+  '''^application-secret-material-at-least-32-characters$''',
+]
