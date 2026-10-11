@@ -1,0 +1,32 @@
+{
+  "name": "@aios/jobs",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "aios-jobs": "./src/cli.ts"
+  },
+  "dependencies": {
+    "@aios/contracts": "0.1.0",
+    "@aios/data": "0.1.0",
+    "@aios/graph": "0.1.0",
+    "@aios/integrations": "0.1.0",
+    "@supabase/supabase-js": "2.111.0"
+  },
+  "devDependencies": {
+    "@types/node": "24.1.0",
+    "tsx": "4.20.3",
+    "typescript": "5.9.2",
+    "vitest": "4.1.10"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./cli": "./src/cli.ts",
+    "./production": "./src/production.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "worker": "tsx src/cli.ts"
+  }
+}

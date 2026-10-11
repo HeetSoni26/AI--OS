@@ -1,0 +1,39 @@
+{
+  "name": "@aios/data",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "db:format": "prisma format --config ../../prisma.config.ts",
+    "db:validate": "prisma validate --config ../../prisma.config.ts",
+    "db:generate": "prisma generate --config ../../prisma.config.ts",
+    "db:migrate:dev": "node ../../tools/run_prisma.mjs migrate dev",
+    "db:migrate:deploy": "node ../../tools/run_prisma.mjs migrate deploy",
+    "db:seed": "node ../../tools/run_prisma.mjs db seed",
+    "db:bootstrap-owner": "tsx prisma/bootstrap-owner.ts",
+    "db:status": "node ../../tools/run_prisma.mjs migrate status",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --exclude src/**/*.integration.test.ts",
+    "test:integration": "vitest run --config vitest.integration.config.ts"
+  },
+  "dependencies": {
+    "@aios/contracts": "0.1.0",
+    "@aios/graph": "0.1.0",
+    "@prisma/adapter-pg": "7.9.1",
+    "@prisma/client": "7.9.1",
+    "dotenv": "17.4.2",
+    "pg": "8.16.3",
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "@types/node": "24.1.0",
+    "@types/pg": "8.15.5",
+    "prisma": "7.9.1",
+    "tsx": "4.20.3",
+    "typescript": "5.9.2",
+    "vitest": "4.1.10"
+  }
+}

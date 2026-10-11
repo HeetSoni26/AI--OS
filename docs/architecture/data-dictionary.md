@@ -1,0 +1,2272 @@
+# AI OS Data Dictionary
+
+Generated from `packages/data/prisma/schema.prisma`. The Prisma schema and migration SQL remain authoritative; regenerate this document after schema changes.
+
+**Inventory:** 69 models, 62 enums.
+
+## Models
+
+### OwnerAccount
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `id` | `String` | `@id @default(uuid()) @db.Uuid` |
+| `authSubject` | `String` | `@unique @map("auth_subject") @db.Uuid` |
+| `email` | `String` | `@unique @db.VarChar(320)` |
+| `displayName` | `String` | `@map("display_name") @db.VarChar(255)` |
+| `active` | `Boolean` | `@default(true)` |
+| `lastLoginAt` | `DateTime?` | `@map("last_login_at") @db.Timestamptz(6)` |
+| `createdAt` | `DateTime` | `@default(now()) @map("created_at") @db.Timestamptz(6)` |
+| `updatedAt` | `DateTime` | `@updatedAt @map("updated_at") @db.Timestamptz(6)` |
+| `assignments` | `Assignment[]` | `` |
+| `timeEntries` | `TimeEntry[]` | `` |
+
+**Model constraints/indexes:**
+
+- `@@index([active])`
+- `@@map("owner_accounts")`
+
+### Client
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `id` | `String` | `@id @default(uuid()) @db.Uuid` |
+| `name` | `String` | `@db.VarChar(255)` |
+| `industry` | `String?` | `@db.VarChar(100)` |
+| `status` | `ClientStatus` | `@default(PROSPECT)` |
+| `contactName` | `String?` | `@map("contact_name") @db.VarChar(255)` |
+| `contactEmail` | `String?` | `@map("contact_email") @db.VarChar(320)` |
+| `contactPhone` | `String?` | `@map("contact_phone") @db.VarChar(50)` |
+| `website` | `String?` | `@db.VarChar(500)` |
+| `logoUrl` | `String?` | `@map("logo_url")` |
+| `logoFileId` | `String?` | `@unique @map("logo_file_id") @db.Uuid` |
+| `mrr` | `Decimal` | `@default(0) @db.Decimal(10, 2)` |
+| `totalRevenue` | `Decimal` | `@default(0) @map("total_revenue") @db.Decimal(12, 2)` |
+| `startDate` | `DateTime?` | `@map("start_date") @db.Date` |
+| `notes` | `String?` | `` |
+| `createdAt` | `DateTime` | `@default(now()) @map("created_at") @db.Timestamptz(6)` |
+| `updatedAt` | `DateTime` | `@updatedAt @map("updated_at") @db.Timestamptz(6)` |
+| `archivedAt` | `DateTime?` | `@map("archived_at") @db.Timestamptz(6)` |
+| `deletedAt` | `DateTime?` | `@map("deleted_at") @db.Timestamptz(6)` |
+| `contacts` | `Contact[]` | `` |
+| `communications` | `Communication[]` | `` |
+| `projects` | `Project[]` | `` |
+| `agentRuns` | `AgentRun[]` | `` |
+| `agentMemories` | `AgentMemory[]` | `` |
+| `chatbots` | `Chatbot[]` | `` |
+| `chatbotConversations` | `ChatbotConversation[]` | `` |
+| `workflows` | `Workflow[]` | `` |
+| `contentStrategies` | `ContentStrategy[]` | `` |
+| `brandProfiles` | `BrandProfile[]` | `` |
+| `contentArtifacts` | `ContentArtifact[]` | `` |
+| `calendarEntries` | `ContentCalendarEntry[]` | `` |
+| `sourcedLeads` | `SourcedLead[]` | `` |
+| `convertedCrmLeads` | `CrmLead[]` | `@relation("ConvertedClient")` |
+| `invoices` | `Invoice[]` | `` |
+| `payments` | `Payment[]` | `` |
+| `expenses` | `Expense[]` | `` |
+| `costLedgerEntries` | `CostLedgerEntry[]` | `` |
+| `knowledgeEntries` | `KnowledgeEntry[]` | `` |
+| `knowledgeLinks` | `KnowledgeLink[]` | `` |
+| `sops` | `Sop[]` | `` |
+| `integrationConnections` | `IntegrationConnection[]` | `` |
+| `files` | `FileMetadata[]` | `@relation("ClientFiles")` |
+| `logoFile` | `FileMetadata?` | `@relation("ClientLogo", fields: [logoFileId], references: [id], onDelete: SetNull)` |
+| `reports` | `ReportArtifact[]` | `` |
+
+**Model constraints/indexes:**
+
+- `@@index([status, archivedAt])`
+- `@@index([name, id])`
+- `@@index([mrr, id])`
+- `@@index([startDate, id])`
+- `@@index([status, id])`
+- `@@index([contactEmail])`
+- `@@map("clients")`
+
+### Contact
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `id` | `String` | `@id @default(uuid()) @db.Uuid` |
+| `clientId` | `String` | `@map("client_id") @db.Uuid` |
+| `name` | `String` | `@db.VarChar(255)` |
+| `role` | `String?` | `@db.VarChar(150)` |
+| `email` | `String?` | `@db.VarChar(320)` |
+| `normalizedEmail` | `String?` | `@map("normalized_email") @db.VarChar(320)` |
+| `phone` | `String?` | `@db.VarChar(50)` |
+| `notes` | `String?` | `` |
+| `isPrimary` | `Boolean` | `@default(false) @map("is_primary")` |
+| `lastContactAt` | `DateTime?` | `@map("last_contact_at") @db.Timestamptz(6)` |
+| `createdAt` | `DateTime` | `@default(now()) @map("created_at") @db.Timestamptz(6)` |
+| `updatedAt` | `DateTime` | `@updatedAt @map("updated_at") @db.Timestamptz(6)` |
+| `archivedAt` | `DateTime?` | `@map("archived_at") @db.Timestamptz(6)` |
+| `deletedAt` | `DateTime?` | `@map("deleted_at") @db.Timestamptz(6)` |
+| `client` | `Client` | `@relation(fields: [clientId], references: [id], onDelete: Cascade)` |
+| `communications` | `Communication[]` | `` |
+| `communicationContacts` | `CommunicationContact[]` | `` |
+
+**Model constraints/indexes:**
+
+- `@@index([clientId, deletedAt])`
+- `@@index([email])`
+- `@@index([normalizedEmail])`
+- `@@index([clientId, normalizedEmail])`
+- `@@map("contacts")`
+
+### Communication
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `id` | `String` | `@id @default(uuid()) @db.Uuid` |
+| `clientId` | `String` | `@map("client_id") @db.Uuid` |
+| `contactId` | `String?` | `@map("contact_id") @db.Uuid` |
+| `sourcedLeadId` | `String?` | `@map("sourced_lead_id") @db.Uuid` |
+| `crmLeadId` | `String?` | `@map("crm_lead_id") @db.Uuid` |
+| `integrationConnectionId` | `String?` | `@map("integration_connection_id") @db.Uuid` |
+| `type` | `CommunicationType` | `` |
+| `direction` | `CommunicationDirection` | `@default(INTERNAL)` |
+| `occurredAt` | `DateTime` | `@map("occurred_at") @db.Timestamptz(6)` |
+| `summary` | `String` | `` |
+| `body` | `String?` | `` |
+| `nextAction` | `String?` | `@map("next_action")` |
+| `source` | `String?` | `@db.VarChar(100)` |
+| `providerMessageId` | `String?` | `@map("provider_message_id") @db.VarChar(255)` |
+| `providerThreadId` | `String?` | `@map("provider_thread_id") @db.VarChar(255)` |
+| `ingestedAt` | `DateTime?` | `@map("ingested_at") @db.Timestamptz(6)` |
+| `metadata` | `Json?` | `` |
+| `createdAt` | `DateTime` | `@default(now()) @map("created_at") @db.Timestamptz(6)` |
+| `updatedAt` | `DateTime` | `@updatedAt @map("updated_at") @db.Timestamptz(6)` |
+| `archivedAt` | `DateTime?` | `@map("archived_at") @db.Timestamptz(6)` |
+| `deletedAt` | `DateTime?` | `@map("deleted_at") @db.Timestamptz(6)` |
+| `client` | `Client` | `@relation(fields: [clientId], references: [id], onDelete: Cascade)` |
+| `contact` | `Contact?` | `@relation(fields: [contactId], references: [id], onDelete: SetNull)` |
+| `sourcedLead` | `SourcedLead?` | `@relation(fields: [sourcedLeadId], references: [id], onDelete: SetNull)` |
+| `crmLead` | `CrmLead?` | `@relation(fields: [crmLeadId], references: [id], onDelete: SetNull)` |
+| `integrationConnection` | `IntegrationConnection?` | `@relation(fields: [integrationConnectionId], references: [id], onDelete: SetNull)` |
+| `participants` | `CommunicationContact[]` | `` |
+| `outreachEvent` | `OutreachEvent?` | `` |
+
+**Model constraints/indexes:**
+
+- `@@index([clientId, occurredAt(sort: Desc)])`
+- `@@index([integrationConnectionId, providerMessageId, clientId])`
+- `@@index([contactId])`
+- `@@index([crmLeadId])`
+- `@@map("communications")`
+
+### CommunicationContact
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `communicationId` | `String` | `@map("communication_id") @db.Uuid` |
+| `contactId` | `String` | `@map("contact_id") @db.Uuid` |
+| `createdAt` | `DateTime` | `@default(now()) @map("created_at") @db.Timestamptz(6)` |
+| `communication` | `Communication` | `@relation(fields: [communicationId], references: [id], onDelete: Cascade)` |
+| `contact` | `Contact` | `@relation(fields: [contactId], references: [id], onDelete: Cascade)` |
+
+**Model constraints/indexes:**
+
+- `@@id([communicationId, contactId])`
+- `@@index([contactId])`
+- `@@map("communication_contacts")`
+
+### Project
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `id` | `String` | `@id @default(uuid()) @db.Uuid` |
+| `clientId` | `String` | `@map("client_id") @db.Uuid` |
+| `name` | `String` | `@db.VarChar(255)` |
+| `type` | `ProjectType` | `` |
+| `status` | `ProjectStatus` | `@default(PLANNING)` |
+| `description` | `String?` | `` |
+| `startDate` | `DateTime?` | `@map("start_date") @db.Date` |
+| `dueDate` | `DateTime?` | `@map("due_date") @db.Date` |
+| `price` | `Decimal?` | `@db.Decimal(10, 2)` |
+| `hoursSpent` | `Decimal` | `@default(0) @map("hours_spent") @db.Decimal(8, 2)` |
+| `deliverablesJson` | `Json?` | `@map("deliverables_json")` |
+| `createdAt` | `DateTime` | `@default(now()) @map("created_at") @db.Timestamptz(6)` |
+| `updatedAt` | `DateTime` | `@updatedAt @map("updated_at") @db.Timestamptz(6)` |
+| `archivedAt` | `DateTime?` | `@map("archived_at") @db.Timestamptz(6)` |
+| `deletedAt` | `DateTime?` | `@map("deleted_at") @db.Timestamptz(6)` |
+| `client` | `Client` | `@relation(fields: [clientId], references: [id], onDelete: Cascade)` |
+| `tasks` | `Task[]` | `` |
+| `assignments` | `Assignment[]` | `` |
+| `deliverables` | `Deliverable[]` | `` |
+| `timeEntries` | `TimeEntry[]` | `` |
+| `statusHistory` | `ProjectStatusHistory[]` | `` |
+| `knowledgeLinks` | `KnowledgeLink[]` | `` |
+| `files` | `FileMetadata[]` | `` |
+
+**Model constraints/indexes:**
+
+- `@@index([clientId, status])`
+- `@@index([dueDate])`
+- `@@map("projects")`
+
+### ProjectStatusHistory
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `id` | `String` | `@id @default(uuid()) @db.Uuid` |
+| `projectId` | `String` | `@map("project_id") @db.Uuid` |
+| `fromStatus` | `ProjectStatus?` | `@map("from_status")` |
+| `toStatus` | `ProjectStatus` | `@map("to_status")` |
+| `reason` | `String?` | `` |
+| `changedBy` | `String` | `@map("changed_by") @db.VarChar(255)` |
+| `correlationId` | `String` | `@map("correlation_id") @db.VarChar(128)` |
+| `changedAt` | `DateTime` | `@default(now()) @map("changed_at") @db.Timestamptz(6)` |
+| `project` | `Project` | `@relation(fields: [projectId], references: [id], onDelete: Cascade)` |
+
+**Model constraints/indexes:**
+
+- `@@index([projectId, changedAt(sort: Desc)])`
+- `@@map("project_status_history")`
+
+### Task
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `id` | `String` | `@id @default(uuid()) @db.Uuid` |
+| `projectId` | `String` | `@map("project_id") @db.Uuid` |
+| `parentTaskId` | `String?` | `@map("parent_task_id") @db.Uuid` |
+| `title` | `String` | `@db.VarChar(500)` |
+| `description` | `String?` | `` |
+| `status` | `TaskStatus` | `@default(TODO)` |
+| `priority` | `TaskPriority` | `@default(MEDIUM)` |
+| `dueAt` | `DateTime?` | `@map("due_at") @db.Timestamptz(6)` |
+| `completedAt` | `DateTime?` | `@map("completed_at") @db.Timestamptz(6)` |
+| `createdAt` | `DateTime` | `@default(now()) @map("created_at") @db.Timestamptz(6)` |
+| `updatedAt` | `DateTime` | `@updatedAt @map("updated_at") @db.Timestamptz(6)` |
+| `archivedAt` | `DateTime?` | `@map("archived_at") @db.Timestamptz(6)` |
+| `deletedAt` | `DateTime?` | `@map("deleted_at") @db.Timestamptz(6)` |
+| `project` | `Project` | `@relation(fields: [projectId], references: [id], onDelete: Cascade)` |
+| `parentTask` | `Task?` | `@relation("TaskHierarchy", fields: [parentTaskId], references: [id], onDelete: SetNull)` |
+| `childTasks` | `Task[]` | `@relation("TaskHierarchy")` |
+| `assignments` | `Assignment[]` | `` |
+| `timeEntries` | `TimeEntry[]` | `` |
+
+**Model constraints/indexes:**
+
+- `@@unique([id, projectId])`
+- `@@index([projectId, status])`
+- `@@index([dueAt, status])`
+- `@@map("tasks")`
+
+### Assignment
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `id` | `String` | `@id @default(uuid()) @db.Uuid` |
+| `projectId` | `String` | `@map("project_id") @db.Uuid` |
+| `taskId` | `String?` | `@map("task_id") @db.Uuid` |
+| `agentId` | `String?` | `@map("agent_id") @db.Uuid` |
+| `ownerAccountId` | `String?` | `@map("owner_account_id") @db.Uuid` |
+| `assigneeType` | `AssignmentType` | `@map("assignee_type")` |
+| `ownerSubject` | `String?` | `@map("owner_subject") @db.VarChar(255)` |
+| `role` | `String?` | `@db.VarChar(150)` |
+| `assignedAt` | `DateTime` | `@default(now()) @map("assigned_at") @db.Timestamptz(6)` |
+| `completedAt` | `DateTime?` | `@map("completed_at") @db.Timestamptz(6)` |
+| `createdAt` | `DateTime` | `@default(now()) @map("created_at") @db.Timestamptz(6)` |
+| `updatedAt` | `DateTime` | `@updatedAt @map("updated_at") @db.Timestamptz(6)` |
+| `archivedAt` | `DateTime?` | `@map("archived_at") @db.Timestamptz(6)` |
+| `deletedAt` | `DateTime?` | `@map("deleted_at") @db.Timestamptz(6)` |
+| `project` | `Project` | `@relation(fields: [projectId], references: [id], onDelete: Cascade)` |
+| `task` | `Task?` | `@relation(fields: [taskId, projectId], references: [id, projectId], onDelete: Cascade)` |
+| `agent` | `Agent?` | `@relation(fields: [agentId], references: [id], onDelete: SetNull)` |
+| `ownerAccount` | `OwnerAccount?` | `@relation(fields: [ownerAccountId], references: [id], onDelete: Restrict)` |
+| `timeEntries` | `TimeEntry[]` | `` |
+
+**Model constraints/indexes:**
+
+- `@@unique([id, projectId])`
+- `@@index([projectId])`
+- `@@index([ownerAccountId])`
+- `@@index([taskId])`
+- `@@index([agentId])`
+- `@@map("assignments")`
+
+### Deliverable
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `id` | `String` | `@id @default(uuid()) @db.Uuid` |
+| `projectId` | `String` | `@map("project_id") @db.Uuid` |
+| `title` | `String` | `@db.VarChar(500)` |
+| `description` | `String?` | `` |
+| `position` | `Int` | `` |
+| `isRequired` | `Boolean` | `@default(true) @map("is_required")` |
+| `completedAt` | `DateTime?` | `@map("completed_at") @db.Timestamptz(6)` |
+| `createdAt` | `DateTime` | `@default(now()) @map("created_at") @db.Timestamptz(6)` |
+| `updatedAt` | `DateTime` | `@updatedAt @map("updated_at") @db.Timestamptz(6)` |
+| `archivedAt` | `DateTime?` | `@map("archived_at") @db.Timestamptz(6)` |
+| `deletedAt` | `DateTime?` | `@map("deleted_at") @db.Timestamptz(6)` |
+| `project` | `Project` | `@relation(fields: [projectId], references: [id], onDelete: Cascade)` |
+
+**Model constraints/indexes:**
+
+- `@@index([projectId, position])`
+- `@@index([projectId, completedAt])`
+- `@@map("deliverables")`
+
+### TimeEntry
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `id` | `String` | `@id @default(uuid()) @db.Uuid` |
+| `projectId` | `String` | `@map("project_id") @db.Uuid` |
+| `taskId` | `String?` | `@map("task_id") @db.Uuid` |
+| `agentRunId` | `String?` | `@unique @map("agent_run_id") @db.Uuid` |
+| `ownerAccountId` | `String?` | `@map("owner_account_id") @db.Uuid` |
+| `assignmentId` | `String?` | `@map("assignment_id") @db.Uuid` |
+| `source` | `TimeEntrySource` | `` |
+| `description` | `String?` | `` |
+| `startedAt` | `DateTime` | `@map("started_at") @db.Timestamptz(6)` |
+| `endedAt` | `DateTime?` | `@map("ended_at") @db.Timestamptz(6)` |
+| `minutes` | `Int` | `` |
+| `hourlyRate` | `Decimal?` | `@map("hourly_rate") @db.Decimal(10, 2)` |
+| `createdAt` | `DateTime` | `@default(now()) @map("created_at") @db.Timestamptz(6)` |
+| `updatedAt` | `DateTime` | `@updatedAt @map("updated_at") @db.Timestamptz(6)` |
+| `archivedAt` | `DateTime?` | `@map("archived_at") @db.Timestamptz(6)` |
+| `deletedAt` | `DateTime?` | `@map("deleted_at") @db.Timestamptz(6)` |
+| `project` | `Project` | `@relation(fields: [projectId], references: [id], onDelete: Cascade)` |
+| `task` | `Task?` | `@relation(fields: [taskId, projectId], references: [id, projectId], onDelete: Restrict)` |
+| `agentRun` | `AgentRun?` | `@relation(fields: [agentRunId], references: [id], onDelete: SetNull)` |
+| `ownerAccount` | `OwnerAccount?` | `@relation(fields: [ownerAccountId], references: [id], onDelete: Restrict)` |
+| `assignment` | `Assignment?` | `@relation(fields: [assignmentId, projectId], references: [id, projectId], onDelete: Restrict)` |
+
+**Model constraints/indexes:**
+
+- `@@index([projectId, startedAt])`
+- `@@index([ownerAccountId, startedAt])`
+- `@@index([assignmentId])`
+- `@@index([taskId])`
+- `@@map("time_entries")`
+
+### Agent
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `id` | `String` | `@id @default(uuid()) @db.Uuid` |
+| `name` | `String` | `@db.VarChar(255)` |
+| `description` | `String?` | `` |
+| `type` | `AgentType` | `` |
+| `status` | `AgentStatus` | `@default(IDLE)` |
+| `model` | `String` | `@db.VarChar(100)` |
+| `systemPrompt` | `String` | `@map("system_prompt")` |
+| `temperature` | `Decimal` | `@default(0.7) @db.Decimal(3, 2)` |
+| `maxTokens` | `Int` | `@default(4096) @map("max_tokens")` |
+| `topP` | `Decimal` | `@default(1) @map("top_p") @db.Decimal(3, 2)` |
+| `frequencyPenalty` | `Decimal` | `@default(0) @map("frequency_penalty") @db.Decimal(3, 2)` |
+| `scheduleCron` | `String?` | `@map("schedule_cron") @db.VarChar(100)` |
+| `dailyTokenBudget` | `Int?` | `@map("daily_token_budget")` |
+| `totalRuns` | `Int` | `@default(0) @map("total_runs")` |
+| `totalCostUsd` | `Decimal` | `@default(0) @map("total_cost_usd") @db.Decimal(12, 6)` |
+| `successRate` | `Decimal` | `@default(100) @map("success_rate") @db.Decimal(5, 2)` |
+| `lastRunAt` | `DateTime?` | `@map("last_run_at") @db.Timestamptz(6)` |
+| `lastRunStatus` | `AgentRunStatus?` | `@map("last_run_status")` |
+| `configJson` | `Json?` | `@map("config_json")` |
+| `currentConfigVersionId` | `String?` | `@unique @map("current_config_version_id") @db.Uuid` |
+| `createdAt` | `DateTime` | `@default(now()) @map("created_at") @db.Timestamptz(6)` |
+| `updatedAt` | `DateTime` | `@updatedAt @map("updated_at") @db.Timestamptz(6)` |
+| `archivedAt` | `DateTime?` | `@map("archived_at") @db.Timestamptz(6)` |
+| `deletedAt` | `DateTime?` | `@map("deleted_at") @db.Timestamptz(6)` |
+| `currentConfigVersion` | `AgentConfigVersion?` | `@relation("CurrentAgentConfig", fields: [currentConfigVersionId], references: [id], onDelete: SetNull)` |
+| `configVersions` | `AgentConfigVersion[]` | `@relation("AgentConfigVersions")` |
+| `runs` | `AgentRun[]` | `` |
+| `memories` | `AgentMemory[]` | `` |
+| `assignments` | `Assignment[]` | `` |
+| `chatbots` | `Chatbot[]` | `` |
+| `workflows` | `Workflow[]` | `` |
+| `contentArtifacts` | `ContentArtifact[]` | `` |
+| `knowledgeEntries` | `KnowledgeEntry[]` | `` |
+| `knowledgeLinks` | `KnowledgeLink[]` | `` |
+| `sops` | `Sop[]` | `` |
+| `approvals` | `Approval[]` | `` |
+| `costLedgerEntries` | `CostLedgerEntry[]` | `` |
+
+**Model constraints/indexes:**
+
+- `@@index([status, deletedAt])`
+- `@@index([type])`
+- `@@map("agents")`
+
+### AgentConfigVersion
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `id` | `String` | `@id @default(uuid()) @db.Uuid` |
+| `agentId` | `String` | `@map("agent_id") @db.Uuid` |
+| `version` | `Int` | `` |
+| `model` | `String` | `@db.VarChar(100)` |
+| `systemPrompt` | `String` | `@map("system_prompt")` |
+| `temperature` | `Decimal` | `@db.Decimal(3, 2)` |
+| `maxTokens` | `Int` | `@map("max_tokens")` |
+| `topP` | `Decimal` | `@map("top_p") @db.Decimal(3, 2)` |
+| `frequencyPenalty` | `Decimal` | `@map("frequency_penalty") @db.Decimal(3, 2)` |
+| `tools` | `String[]` | `@default([])` |
+| `triggerConfig` | `Json?` | `@map("trigger_config")` |
+| `configJson` | `Json?` | `@map("config_json")` |
+| `changeSummary` | `String?` | `@map("change_summary")` |
+| `createdAt` | `DateTime` | `@default(now()) @map("created_at") @db.Timestamptz(6)` |
+| `createdBy` | `String?` | `@map("created_by") @db.VarChar(255)` |
+| `deletedAt` | `DateTime?` | `@map("deleted_at") @db.Timestamptz(6)` |
+| `agent` | `Agent` | `@relation("AgentConfigVersions", fields: [agentId], references: [id], onDelete: Cascade)` |
+| `currentForAgents` | `Agent[]` | `@relation("CurrentAgentConfig")` |
+| `runs` | `AgentRun[]` | `` |
+| `approvals` | `Approval[]` | `` |
+
+**Model constraints/indexes:**
+
+- `@@unique([agentId, version])`
+- `@@index([agentId, createdAt(sort: Desc)])`
+- `@@map("agent_config_versions")`
+
+### AgentRun
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `id` | `String` | `@id @default(uuid()) @db.Uuid` |
+| `agentId` | `String` | `@map("agent_id") @db.Uuid` |
+| `clientId` | `String?` | `@map("client_id") @db.Uuid` |
+| `configVersionId` | `String?` | `@map("config_version_id") @db.Uuid` |
+| `parentRunId` | `String?` | `@map("parent_run_id") @db.Uuid` |
+| `status` | `AgentRunStatus` | `@default(QUEUED)` |
+| `triggerType` | `AgentTriggerType` | `@map("trigger_type")` |
+| `idempotencyKey` | `String?` | `@unique @map("idempotency_key") @db.VarChar(255)` |
+| `inputText` | `String?` | `@map("input_text")` |
+| `outputText` | `String?` | `@map("output_text")` |
+| `partialOutput` | `String?` | `@map("partial_output")` |
+| `tokensInput` | `Int` | `@default(0) @map("tokens_input")` |
+| `tokensOutput` | `Int` | `@default(0) @map("tokens_output")` |
+| `costUsd` | `Decimal` | `@default(0) @map("cost_usd") @db.Decimal(12, 6)` |
+| `durationMs` | `Int?` | `@map("duration_ms")` |
+| `attempt` | `Int` | `@default(1)` |
+| `errorMessage` | `String?` | `@map("error_message")` |
+| `metadata` | `Json?` | `` |
+| `startedAt` | `DateTime?` | `@map("started_at") @db.Timestamptz(6)` |
+| `completedAt` | `DateTime?` | `@map("completed_at") @db.Timestamptz(6)` |
+| `createdAt` | `DateTime` | `@default(now()) @map("created_at") @db.Timestamptz(6)` |
+| `updatedAt` | `DateTime` | `@updatedAt @map("updated_at") @db.Timestamptz(6)` |
+| `deletedAt` | `DateTime?` | `@map("deleted_at") @db.Timestamptz(6)` |
+| `agent` | `Agent` | `@relation(fields: [agentId], references: [id], onDelete: Restrict)` |
+| `client` | `Client?` | `@relation(fields: [clientId], references: [id], onDelete: SetNull)` |
+| `configVersion` | `AgentConfigVersion?` | `@relation(fields: [configVersionId], references: [id], onDelete: SetNull)` |
+| `parentRun` | `AgentRun?` | `@relation("AgentRunChain", fields: [parentRunId], references: [id], onDelete: SetNull)` |
+| `childRuns` | `AgentRun[]` | `@relation("AgentRunChain")` |
+| `timeEntry` | `TimeEntry?` | `` |
+| `memories` | `AgentMemory[]` | `` |
+| `approvals` | `Approval[]` | `` |
+| `sopExecutions` | `SopExecution[]` | `` |
+| `research` | `LeadResearch[]` | `` |
+| `costEntries` | `CostLedgerEntry[]` | `` |
+
+**Model constraints/indexes:**
+
+- `@@index([agentId, createdAt(sort: Desc)])`
+- `@@index([clientId, createdAt(sort: Desc)])`
+- `@@index([status, createdAt])`
+- `@@map("agent_runs")`
+
+### AgentMemory
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `id` | `String` | `@id @default(uuid()) @db.Uuid` |
+| `agentId` | `String` | `@map("agent_id") @db.Uuid` |
+| `clientId` | `String?` | `@map("client_id") @db.Uuid` |
+| `sourceRunId` | `String?` | `@map("source_run_id") @db.Uuid` |
+| `kind` | `MemoryKind` | `` |
+| `key` | `String?` | `@db.VarChar(255)` |
+| `value` | `String` | `` |
+| `embedding` | `Unsupported("vector(1536)")?` | `` |
+| `embeddingModel` | `String?` | `@map("embedding_model") @db.VarChar(100)` |
+| `version` | `Int` | `@default(1)` |
+| `tokenCount` | `Int?` | `@map("token_count")` |
+| `sourceIds` | `String[]` | `@default([]) @map("source_ids") @db.Uuid` |
+| `summarizedAt` | `DateTime?` | `@map("summarized_at") @db.Timestamptz(6)` |
+| `createdAt` | `DateTime` | `@default(now()) @map("created_at") @db.Timestamptz(6)` |
+| `updatedAt` | `DateTime` | `@updatedAt @map("updated_at") @db.Timestamptz(6)` |
+| `archivedAt` | `DateTime?` | `@map("archived_at") @db.Timestamptz(6)` |
+| `deletedAt` | `DateTime?` | `@map("deleted_at") @db.Timestamptz(6)` |
+| `agent` | `Agent` | `@relation(fields: [agentId], references: [id], onDelete: Cascade)` |
+| `client` | `Client?` | `@relation(fields: [clientId], references: [id], onDelete: Cascade)` |
+| `sourceRun` | `AgentRun?` | `@relation(fields: [sourceRunId], references: [id], onDelete: SetNull)` |
+
+**Model constraints/indexes:**
+
+- `@@index([agentId, clientId, kind])`
+- `@@index([sourceRunId])`
+- `@@map("agent_memories")`
+
+### Approval
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `id` | `String` | `@id @default(uuid()) @db.Uuid` |
+| `action` | `ApprovalAction` | `` |
+| `status` | `ApprovalStatus` | `@default(PENDING)` |
+| `agentId` | `String?` | `@map("agent_id") @db.Uuid` |
+| `agentRunId` | `String?` | `@map("agent_run_id") @db.Uuid` |
+| `configVersionId` | `String?` | `@map("config_version_id") @db.Uuid` |
+| `entityType` | `String` | `@map("entity_type") @db.VarChar(100)` |
+| `entityId` | `String` | `@map("entity_id") @db.Uuid` |
+| `entityVersion` | `Int?` | `@map("entity_version")` |
+| `requestedBy` | `String?` | `@map("requested_by") @db.VarChar(255)` |
+| `decidedBy` | `String?` | `@map("decided_by") @db.VarChar(255)` |
+| `requestedAt` | `DateTime` | `@default(now()) @map("requested_at") @db.Timestamptz(6)` |
+| `decidedAt` | `DateTime?` | `@map("decided_at") @db.Timestamptz(6)` |
+| `expiresAt` | `DateTime?` | `@map("expires_at") @db.Timestamptz(6)` |
+| `decisionNote` | `String?` | `@map("decision_note")` |
+| `payloadHash` | `String` | `@map("payload_hash") @db.VarChar(128)` |
+| `createdAt` | `DateTime` | `@default(now()) @map("created_at") @db.Timestamptz(6)` |
+| `updatedAt` | `DateTime` | `@updatedAt @map("updated_at") @db.Timestamptz(6)` |
+| `deletedAt` | `DateTime?` | `@map("deleted_at") @db.Timestamptz(6)` |
+| `agent` | `Agent?` | `@relation(fields: [agentId], references: [id], onDelete: SetNull)` |
+| `agentRun` | `AgentRun?` | `@relation(fields: [agentRunId], references: [id], onDelete: SetNull)` |
+| `configVersion` | `AgentConfigVersion?` | `@relation(fields: [configVersionId], references: [id], onDelete: SetNull)` |
+| `outreachSequences` | `OutreachSequence[]` | `` |
+| `workflowVersions` | `WorkflowVersion[]` | `` |
+| `contentVersions` | `ContentArtifactVersion[]` | `` |
+
+**Model constraints/indexes:**
+
+- `@@index([status, requestedAt])`
+- `@@index([entityType, entityId])`
+- `@@map("approvals")`
+
+### Chatbot
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `id` | `String` | `@id @default(uuid()) @db.Uuid` |
+| `clientId` | `String` | `@map("client_id") @db.Uuid` |
+| `agentId` | `String?` | `@map("agent_id") @db.Uuid` |
+| `name` | `String` | `@db.VarChar(255)` |
+| `platform` | `ChatbotPlatform` | `` |
+| `status` | `ChatbotStatus` | `@default(DRAFT)` |
+| `activeVersion` | `Int?` | `` |
+| `allowedDomains` | `String[]` | `@default([]) @map("allowed_domains")` |
+| `createdAt` | `DateTime` | `@default(now()) @map("created_at") @db.Timestamptz(6)` |
+| `updatedAt` | `DateTime` | `@updatedAt @map("updated_at") @db.Timestamptz(6)` |
+| `archivedAt` | `DateTime?` | `@map("archived_at") @db.Timestamptz(6)` |
+| `deletedAt` | `DateTime?` | `@map("deleted_at") @db.Timestamptz(6)` |
+| `client` | `Client` | `@relation(fields: [clientId], references: [id], onDelete: Cascade)` |
+| `agent` | `Agent?` | `@relation(fields: [agentId], references: [id], onDelete: SetNull)` |
+| `versions` | `ChatbotVersion[]` | `` |
+| `sources` | `ChatbotSource[]` | `` |
+| `qaPairs` | `ChatbotQaPair[]` | `` |
+| `conversations` | `ChatbotConversation[]` | `` |
+
+**Model constraints/indexes:**
+
+- `@@index([clientId, status])`
+- `@@map("chatbots")`
+
+### ChatbotVersion
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `id` | `String` | `@id @default(uuid()) @db.Uuid` |
+| `chatbotId` | `String` | `@map("chatbot_id") @db.Uuid` |
+| `version` | `Int` | `` |
+| `name` | `String` | `@db.VarChar(255)` |
+| `brandVoice` | `String` | `@map("brand_voice")` |
+| `greetingMessage` | `String` | `@map("greeting_message")` |
+| `fallbackResponse` | `String` | `@map("fallback_response")` |
+| `escalationRules` | `Json` | `@map("escalation_rules")` |
+| `confidenceThreshold` | `Decimal` | `@default(0.7) @map("confidence_threshold") @db.Decimal(4, 3)` |
+| `model` | `String` | `@db.VarChar(100)` |
+| `systemPrompt` | `String` | `@map("system_prompt")` |
+| `customActions` | `Json?` | `@map("custom_actions")` |
+| `bookingConfig` | `Json?` | `@map("booking_config")` |
+| `recommendationConfig` | `Json?` | `@map("recommendation_config")` |
+| `status` | `ChatbotStatus` | `@default(DRAFT)` |
+| `publishedAt` | `DateTime?` | `@map("published_at") @db.Timestamptz(6)` |
+| `createdAt` | `DateTime` | `@default(now()) @map("created_at") @db.Timestamptz(6)` |
+| `deletedAt` | `DateTime?` | `@map("deleted_at") @db.Timestamptz(6)` |
+| `chatbot` | `Chatbot` | `@relation(fields: [chatbotId], references: [id], onDelete: Cascade)` |
+| `qaPairs` | `ChatbotQaPair[]` | `` |
+| `conversations` | `ChatbotConversation[]` | `` |
+
+**Model constraints/indexes:**
+
+- `@@unique([chatbotId, version])`
+- `@@index([chatbotId, status])`
+- `@@map("chatbot_versions")`
+
+### ChatbotSource
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `id` | `String` | `@id @default(uuid()) @db.Uuid` |
+| `chatbotId` | `String` | `@map("chatbot_id") @db.Uuid` |
+| `fileId` | `String?` | `@unique @map("file_id") @db.Uuid` |
+| `type` | `ChatbotSourceType` | `` |
+| `title` | `String` | `@db.VarChar(500)` |
+| `sourceUrl` | `String?` | `@map("source_url") @db.VarChar(2000)` |
+| `contentHash` | `String?` | `@map("content_hash") @db.VarChar(128)` |
+| `status` | `IngestionStatus` | `@default(PENDING)` |
+| `failureReason` | `String?` | `@map("failure_reason")` |
+| `provenance` | `Json?` | `` |
+| `approvedAt` | `DateTime?` | `@map("approved_at") @db.Timestamptz(6)` |
+| `createdAt` | `DateTime` | `@default(now()) @map("created_at") @db.Timestamptz(6)` |
+| `updatedAt` | `DateTime` | `@updatedAt @map("updated_at") @db.Timestamptz(6)` |
+| `archivedAt` | `DateTime?` | `@map("archived_at") @db.Timestamptz(6)` |
+| `deletedAt` | `DateTime?` | `@map("deleted_at") @db.Timestamptz(6)` |
+| `chatbot` | `Chatbot` | `@relation(fields: [chatbotId], references: [id], onDelete: Cascade)` |
+| `file` | `FileMetadata?` | `@relation(fields: [fileId], references: [id], onDelete: SetNull)` |
+| `qaPairs` | `ChatbotQaPair[]` | `` |
+
+**Model constraints/indexes:**
+
+- `@@index([chatbotId, status])`
+- `@@index([sourceUrl])`
+- `@@map("chatbot_sources")`
+
+### ChatbotQaPair
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `id` | `String` | `@id @default(uuid()) @db.Uuid` |
+| `chatbotId` | `String` | `@map("chatbot_id") @db.Uuid` |
+| `sourceId` | `String` | `@map("source_id") @db.Uuid` |
+| `chatbotVersionId` | `String?` | `@map("chatbot_version_id") @db.Uuid` |
+| `question` | `String` | `` |
+| `answer` | `String` | `` |
+| `confidence` | `Decimal?` | `@db.Decimal(4, 3)` |
+| `evidence` | `String?` | `` |
+| `approvedAt` | `DateTime?` | `@map("approved_at") @db.Timestamptz(6)` |
+| `createdAt` | `DateTime` | `@default(now()) @map("created_at") @db.Timestamptz(6)` |
+| `updatedAt` | `DateTime` | `@updatedAt @map("updated_at") @db.Timestamptz(6)` |
+| `deletedAt` | `DateTime?` | `@map("deleted_at") @db.Timestamptz(6)` |
+| `chatbot` | `Chatbot` | `@relation(fields: [chatbotId], references: [id], onDelete: Cascade)` |
+| `source` | `ChatbotSource` | `@relation(fields: [sourceId], references: [id], onDelete: Cascade)` |
+| `chatbotVersion` | `ChatbotVersion?` | `@relation(fields: [chatbotVersionId], references: [id], onDelete: SetNull)` |
+
+**Model constraints/indexes:**
+
+- `@@index([chatbotId, approvedAt])`
+- `@@index([sourceId])`
+- `@@map("chatbot_qa_pairs")`
+
+### ChatbotConversation
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `id` | `String` | `@id @default(uuid()) @db.Uuid` |
+| `chatbotId` | `String` | `@map("chatbot_id") @db.Uuid` |
+| `chatbotVersionId` | `String?` | `@map("chatbot_version_id") @db.Uuid` |
+| `clientId` | `String` | `@map("client_id") @db.Uuid` |
+| `sourcedLeadId` | `String?` | `@map("sourced_lead_id") @db.Uuid` |
+| `status` | `ConversationStatus` | `@default(OPEN)` |
+| `externalId` | `String?` | `@map("external_id") @db.VarChar(255)` |
+| `channel` | `ChatbotPlatform` | `` |
+| `intent` | `String?` | `@db.VarChar(150)` |
+| `sentimentScore` | `Decimal?` | `@map("sentiment_score") @db.Decimal(4, 3)` |
+| `confidence` | `Decimal?` | `@db.Decimal(4, 3)` |
+| `isLowConfidence` | `Boolean` | `@default(false) @map("is_low_confidence")` |
+| `leadCaptured` | `Boolean` | `@default(false) @map("lead_captured")` |
+| `escalatedAt` | `DateTime?` | `@map("escalated_at") @db.Timestamptz(6)` |
+| `resolvedAt` | `DateTime?` | `@map("resolved_at") @db.Timestamptz(6)` |
+| `createdAt` | `DateTime` | `@default(now()) @map("created_at") @db.Timestamptz(6)` |
+| `updatedAt` | `DateTime` | `@updatedAt @map("updated_at") @db.Timestamptz(6)` |
+| `deletedAt` | `DateTime?` | `@map("deleted_at") @db.Timestamptz(6)` |
+| `chatbot` | `Chatbot` | `@relation(fields: [chatbotId], references: [id], onDelete: Cascade)` |
+| `chatbotVersion` | `ChatbotVersion?` | `@relation(fields: [chatbotVersionId], references: [id], onDelete: SetNull)` |
+| `client` | `Client` | `@relation(fields: [clientId], references: [id], onDelete: Cascade)` |
+| `sourcedLead` | `SourcedLead?` | `@relation(fields: [sourcedLeadId], references: [id], onDelete: SetNull)` |
+| `messages` | `ChatbotMessage[]` | `` |
+
+**Model constraints/indexes:**
+
+- `@@unique([chatbotId, externalId])`
+- `@@index([clientId, createdAt(sort: Desc)])`
+- `@@index([status, isLowConfidence])`
+- `@@map("chatbot_conversations")`
+
+### ChatbotMessage
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `id` | `String` | `@id @default(uuid()) @db.Uuid` |
+| `conversationId` | `String` | `@map("conversation_id") @db.Uuid` |
+| `role` | `MessageRole` | `` |
+| `content` | `String` | `` |
+| `sequence` | `Int` | `` |
+| `providerId` | `String?` | `@map("provider_id") @db.VarChar(255)` |
+| `confidence` | `Decimal?` | `@db.Decimal(4, 3)` |
+| `intent` | `String?` | `@db.VarChar(150)` |
+| `sentimentScore` | `Decimal?` | `@map("sentiment_score") @db.Decimal(4, 3)` |
+| `responseLatencyMs` | `Int?` | `@map("response_latency_ms")` |
+| `tokensInput` | `Int` | `@default(0) @map("tokens_input")` |
+| `tokensOutput` | `Int` | `@default(0) @map("tokens_output")` |
+| `costUsd` | `Decimal` | `@default(0) @map("cost_usd") @db.Decimal(12, 6)` |
+| `citations` | `Json?` | `` |
+| `createdAt` | `DateTime` | `@default(now()) @map("created_at") @db.Timestamptz(6)` |
+| `deletedAt` | `DateTime?` | `@map("deleted_at") @db.Timestamptz(6)` |
+| `conversation` | `ChatbotConversation` | `@relation(fields: [conversationId], references: [id], onDelete: Cascade)` |
+
+**Model constraints/indexes:**
+
+- `@@unique([conversationId, sequence])`
+- `@@unique([conversationId, providerId])`
+- `@@index([conversationId, createdAt])`
+- `@@map("chatbot_messages")`
+
+### Workflow
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `id` | `String` | `@id @default(uuid()) @db.Uuid` |
+| `clientId` | `String` | `@map("client_id") @db.Uuid` |
+| `agentId` | `String?` | `@map("agent_id") @db.Uuid` |
+| `name` | `String` | `@db.VarChar(255)` |
+| `description` | `String?` | `` |
+| `provider` | `WorkflowProvider` | `` |
+| `status` | `WorkflowStatus` | `@default(DRAFT)` |
+| `providerWorkflowId` | `String?` | `@map("provider_workflow_id") @db.VarChar(255)` |
+| `currentVersion` | `Int?` | `` |
+| `webhookUrl` | `String?` | `@map("webhook_url") @db.VarChar(2000)` |
+| `totalExecutions` | `Int` | `@default(0) @map("total_executions")` |
+| `successRate` | `Decimal` | `@default(100) @map("success_rate") @db.Decimal(5, 2)` |
+| `averageDurationMs` | `Int?` | `@map("average_duration_ms")` |
+| `lastExecutedAt` | `DateTime?` | `@map("last_executed_at") @db.Timestamptz(6)` |
+| `createdAt` | `DateTime` | `@default(now()) @map("created_at") @db.Timestamptz(6)` |
+| `updatedAt` | `DateTime` | `@updatedAt @map("updated_at") @db.Timestamptz(6)` |
+| `archivedAt` | `DateTime?` | `@map("archived_at") @db.Timestamptz(6)` |
+| `deletedAt` | `DateTime?` | `@map("deleted_at") @db.Timestamptz(6)` |
+| `client` | `Client` | `@relation(fields: [clientId], references: [id], onDelete: Cascade)` |
+| `agent` | `Agent?` | `@relation(fields: [agentId], references: [id], onDelete: SetNull)` |
+| `versions` | `WorkflowVersion[]` | `` |
+| `executions` | `WorkflowExecution[]` | `` |
+| `credentials` | `WorkflowCredentialBinding[]` | `` |
+
+**Model constraints/indexes:**
+
+- `@@unique([provider, providerWorkflowId])`
+- `@@index([clientId, status])`
+- `@@map("workflows")`
+
+### WorkflowVersion
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `id` | `String` | `@id @default(uuid()) @db.Uuid` |
+| `workflowId` | `String` | `@map("workflow_id") @db.Uuid` |
+| `approvalId` | `String?` | `@map("approval_id") @db.Uuid` |
+| `version` | `Int` | `` |
+| `blueprint` | `Json` | `` |
+| `humanPlan` | `String` | `@map("human_plan")` |
+| `assumptions` | `String[]` | `@default([])` |
+| `validation` | `Json?` | `` |
+| `changeSummary` | `String?` | `@map("change_summary")` |
+| `isImmutable` | `Boolean` | `@default(false) @map("is_immutable")` |
+| `testedAt` | `DateTime?` | `@map("tested_at") @db.Timestamptz(6)` |
+| `deployedAt` | `DateTime?` | `@map("deployed_at") @db.Timestamptz(6)` |
+| `createdAt` | `DateTime` | `@default(now()) @map("created_at") @db.Timestamptz(6)` |
+| `deletedAt` | `DateTime?` | `@map("deleted_at") @db.Timestamptz(6)` |
+| `workflow` | `Workflow` | `@relation(fields: [workflowId], references: [id], onDelete: Cascade)` |
+| `approval` | `Approval?` | `@relation(fields: [approvalId], references: [id], onDelete: SetNull)` |
+| `executions` | `WorkflowExecution[]` | `` |
+
+**Model constraints/indexes:**
+
+- `@@unique([workflowId, version])`
+- `@@index([workflowId, createdAt(sort: Desc)])`
+- `@@map("workflow_versions")`
+
+### WorkflowExecution
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `id` | `String` | `@id @default(uuid()) @db.Uuid` |
+| `workflowId` | `String` | `@map("workflow_id") @db.Uuid` |
+| `workflowVersionId` | `String` | `@map("workflow_version_id") @db.Uuid` |
+| `providerExecutionId` | `String?` | `@map("provider_execution_id") @db.VarChar(255)` |
+| `status` | `WorkflowExecutionStatus` | `@default(QUEUED)` |
+| `idempotencyKey` | `String` | `@unique @map("idempotency_key") @db.VarChar(255)` |
+| `input` | `Json?` | `` |
+| `output` | `Json?` | `` |
+| `failureStep` | `String?` | `@map("failure_step") @db.VarChar(255)` |
+| `errorMessage` | `String?` | `@map("error_message")` |
+| `durationMs` | `Int?` | `@map("duration_ms")` |
+| `startedAt` | `DateTime?` | `@map("started_at") @db.Timestamptz(6)` |
+| `completedAt` | `DateTime?` | `@map("completed_at") @db.Timestamptz(6)` |
+| `createdAt` | `DateTime` | `@default(now()) @map("created_at") @db.Timestamptz(6)` |
+| `deletedAt` | `DateTime?` | `@map("deleted_at") @db.Timestamptz(6)` |
+| `workflow` | `Workflow` | `@relation(fields: [workflowId], references: [id], onDelete: Cascade)` |
+| `workflowVersion` | `WorkflowVersion` | `@relation(fields: [workflowVersionId], references: [id], onDelete: Restrict)` |
+
+**Model constraints/indexes:**
+
+- `@@unique([workflowId, providerExecutionId])`
+- `@@index([workflowId, createdAt(sort: Desc)])`
+- `@@index([status, createdAt])`
+- `@@map("workflow_executions")`
+
+### WorkflowCredentialBinding
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `id` | `String` | `@id @default(uuid()) @db.Uuid` |
+| `workflowId` | `String` | `@map("workflow_id") @db.Uuid` |
+| `integrationConnectionId` | `String` | `@map("integration_connection_id") @db.Uuid` |
+| `purpose` | `String` | `@db.VarChar(255)` |
+| `providerCredentialId` | `String?` | `@map("provider_credential_id") @db.VarChar(255)` |
+| `createdAt` | `DateTime` | `@default(now()) @map("created_at") @db.Timestamptz(6)` |
+| `deletedAt` | `DateTime?` | `@map("deleted_at") @db.Timestamptz(6)` |
+| `workflow` | `Workflow` | `@relation(fields: [workflowId], references: [id], onDelete: Cascade)` |
+| `integrationConnection` | `IntegrationConnection` | `@relation(fields: [integrationConnectionId], references: [id], onDelete: Restrict)` |
+
+**Model constraints/indexes:**
+
+- `@@unique([workflowId, integrationConnectionId, purpose])`
+- `@@map("workflow_credential_bindings")`
+
+### ContentStrategy
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `id` | `String` | `@id @default(uuid()) @db.Uuid` |
+| `clientId` | `String?` | `@map("client_id") @db.Uuid` |
+| `scope` | `ContentScope` | `` |
+| `name` | `String` | `@db.VarChar(255)` |
+| `targetAudience` | `String` | `@map("target_audience")` |
+| `keyTopics` | `String[]` | `@default([]) @map("key_topics")` |
+| `brandVoice` | `String` | `@map("brand_voice")` |
+| `contentPillars` | `String[]` | `@default([]) @map("content_pillars")` |
+| `offers` | `String[]` | `@default([])` |
+| `goals` | `String[]` | `@default([])` |
+| `version` | `Int` | `@default(1)` |
+| `createdAt` | `DateTime` | `@default(now()) @map("created_at") @db.Timestamptz(6)` |
+| `updatedAt` | `DateTime` | `@updatedAt @map("updated_at") @db.Timestamptz(6)` |
+| `archivedAt` | `DateTime?` | `@map("archived_at") @db.Timestamptz(6)` |
+| `deletedAt` | `DateTime?` | `@map("deleted_at") @db.Timestamptz(6)` |
+| `client` | `Client?` | `@relation(fields: [clientId], references: [id], onDelete: Cascade)` |
+| `artifacts` | `ContentArtifact[]` | `` |
+
+**Model constraints/indexes:**
+
+- `@@index([clientId, scope])`
+- `@@map("content_strategies")`
+
+### BrandProfile
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `id` | `String` | `@id @default(uuid()) @db.Uuid` |
+| `clientId` | `String?` | `@map("client_id") @db.Uuid` |
+| `scope` | `ContentScope` | `` |
+| `name` | `String` | `@db.VarChar(255)` |
+| `tone` | `String` | `` |
+| `vocabulary` | `String[]` | `@default([])` |
+| `targetAudience` | `String` | `@map("target_audience")` |
+| `keyMessages` | `String[]` | `@default([]) @map("key_messages")` |
+| `prohibitedClaims` | `String[]` | `@default([]) @map("prohibited_claims")` |
+| `examples` | `String[]` | `@default([])` |
+| `platformRules` | `Json?` | `@map("platform_rules")` |
+| `version` | `Int` | `@default(1)` |
+| `createdAt` | `DateTime` | `@default(now()) @map("created_at") @db.Timestamptz(6)` |
+| `updatedAt` | `DateTime` | `@updatedAt @map("updated_at") @db.Timestamptz(6)` |
+| `archivedAt` | `DateTime?` | `@map("archived_at") @db.Timestamptz(6)` |
+| `deletedAt` | `DateTime?` | `@map("deleted_at") @db.Timestamptz(6)` |
+| `client` | `Client?` | `@relation(fields: [clientId], references: [id], onDelete: Cascade)` |
+| `artifacts` | `ContentArtifact[]` | `` |
+
+**Model constraints/indexes:**
+
+- `@@index([clientId, scope])`
+- `@@map("brand_profiles")`
+
+### ContentArtifact
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `id` | `String` | `@id @default(uuid()) @db.Uuid` |
+| `clientId` | `String?` | `@map("client_id") @db.Uuid` |
+| `strategyId` | `String?` | `@map("strategy_id") @db.Uuid` |
+| `brandProfileId` | `String?` | `@map("brand_profile_id") @db.Uuid` |
+| `parentArtifactId` | `String?` | `@map("parent_artifact_id") @db.Uuid` |
+| `generatedByAgentId` | `String?` | `@map("generated_by_agent_id") @db.Uuid` |
+| `scope` | `ContentScope` | `` |
+| `type` | `ContentType` | `` |
+| `status` | `ContentStatus` | `@default(DRAFT)` |
+| `title` | `String` | `@db.VarChar(500)` |
+| `brief` | `String?` | `` |
+| `body` | `String` | `` |
+| `sourceIds` | `String[]` | `@default([]) @map("source_ids") @db.Uuid` |
+| `claimsToVerify` | `String[]` | `@default([]) @map("claims_to_verify")` |
+| `seoMetadata` | `Json?` | `@map("seo_metadata")` |
+| `currentVersion` | `Int` | `@default(1) @map("current_version")` |
+| `createdAt` | `DateTime` | `@default(now()) @map("created_at") @db.Timestamptz(6)` |
+| `updatedAt` | `DateTime` | `@updatedAt @map("updated_at") @db.Timestamptz(6)` |
+| `archivedAt` | `DateTime?` | `@map("archived_at") @db.Timestamptz(6)` |
+| `deletedAt` | `DateTime?` | `@map("deleted_at") @db.Timestamptz(6)` |
+| `client` | `Client?` | `@relation(fields: [clientId], references: [id], onDelete: Cascade)` |
+| `strategy` | `ContentStrategy?` | `@relation(fields: [strategyId], references: [id], onDelete: SetNull)` |
+| `brandProfile` | `BrandProfile?` | `@relation(fields: [brandProfileId], references: [id], onDelete: SetNull)` |
+| `parentArtifact` | `ContentArtifact?` | `@relation("ContentLineage", fields: [parentArtifactId], references: [id], onDelete: SetNull)` |
+| `derivedArtifacts` | `ContentArtifact[]` | `@relation("ContentLineage")` |
+| `generatedByAgent` | `Agent?` | `@relation(fields: [generatedByAgentId], references: [id], onDelete: SetNull)` |
+| `versions` | `ContentArtifactVersion[]` | `` |
+| `calendarEntries` | `ContentCalendarEntry[]` | `` |
+| `publishEvents` | `ContentPublishEvent[]` | `` |
+| `metrics` | `ContentMetric[]` | `` |
+
+**Model constraints/indexes:**
+
+- `@@index([clientId, status])`
+- `@@index([scope, type, status])`
+- `@@index([parentArtifactId])`
+- `@@map("content_artifacts")`
+
+### ContentArtifactVersion
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `id` | `String` | `@id @default(uuid()) @db.Uuid` |
+| `artifactId` | `String` | `@map("artifact_id") @db.Uuid` |
+| `approvalId` | `String?` | `@map("approval_id") @db.Uuid` |
+| `version` | `Int` | `` |
+| `status` | `ContentStatus` | `@default(DRAFT)` |
+| `title` | `String` | `@db.VarChar(500)` |
+| `body` | `String` | `` |
+| `metadata` | `Json?` | `` |
+| `promptModel` | `String?` | `@map("prompt_model") @db.VarChar(100)` |
+| `promptVersion` | `String?` | `@map("prompt_version") @db.VarChar(100)` |
+| `costUsd` | `Decimal` | `@default(0) @map("cost_usd") @db.Decimal(12, 6)` |
+| `reviewedAt` | `DateTime?` | `@map("reviewed_at") @db.Timestamptz(6)` |
+| `createdAt` | `DateTime` | `@default(now()) @map("created_at") @db.Timestamptz(6)` |
+| `deletedAt` | `DateTime?` | `@map("deleted_at") @db.Timestamptz(6)` |
+| `artifact` | `ContentArtifact` | `@relation(fields: [artifactId], references: [id], onDelete: Cascade)` |
+| `approval` | `Approval?` | `@relation(fields: [approvalId], references: [id], onDelete: SetNull)` |
+| `calendarEntries` | `ContentCalendarEntry[]` | `` |
+
+**Model constraints/indexes:**
+
+- `@@unique([artifactId, version])`
+- `@@index([artifactId, status])`
+- `@@map("content_artifact_versions")`
+
+### ContentCalendarEntry
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `id` | `String` | `@id @default(uuid()) @db.Uuid` |
+| `clientId` | `String?` | `@map("client_id") @db.Uuid` |
+| `artifactId` | `String` | `@map("artifact_id") @db.Uuid` |
+| `artifactVersionId` | `String` | `@map("artifact_version_id") @db.Uuid` |
+| `scope` | `ContentScope` | `` |
+| `platform` | `IntegrationProvider` | `` |
+| `status` | `ContentStatus` | `@default(SCHEDULED)` |
+| `scheduledFor` | `DateTime` | `@map("scheduled_for") @db.Timestamptz(6)` |
+| `timezone` | `String` | `@db.VarChar(100)` |
+| `recommendationBasis` | `String?` | `@map("recommendation_basis")` |
+| `createdAt` | `DateTime` | `@default(now()) @map("created_at") @db.Timestamptz(6)` |
+| `updatedAt` | `DateTime` | `@updatedAt @map("updated_at") @db.Timestamptz(6)` |
+| `deletedAt` | `DateTime?` | `@map("deleted_at") @db.Timestamptz(6)` |
+| `client` | `Client?` | `@relation(fields: [clientId], references: [id], onDelete: Cascade)` |
+| `artifact` | `ContentArtifact` | `@relation(fields: [artifactId], references: [id], onDelete: Cascade)` |
+| `artifactVersion` | `ContentArtifactVersion` | `@relation(fields: [artifactVersionId], references: [id], onDelete: Restrict)` |
+| `publishEvents` | `ContentPublishEvent[]` | `` |
+
+**Model constraints/indexes:**
+
+- `@@index([scheduledFor, status])`
+- `@@index([clientId, scheduledFor])`
+- `@@map("content_calendar_entries")`
+
+### ContentPublishEvent
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `id` | `String` | `@id @default(uuid()) @db.Uuid` |
+| `calendarEntryId` | `String` | `@map("calendar_entry_id") @db.Uuid` |
+| `artifactId` | `String` | `@map("artifact_id") @db.Uuid` |
+| `integrationConnectionId` | `String?` | `@map("integration_connection_id") @db.Uuid` |
+| `status` | `PublishStatus` | `@default(QUEUED)` |
+| `idempotencyKey` | `String` | `@unique @map("idempotency_key") @db.VarChar(255)` |
+| `providerPostId` | `String?` | `@map("provider_post_id") @db.VarChar(255)` |
+| `attempt` | `Int` | `@default(1)` |
+| `errorMessage` | `String?` | `@map("error_message")` |
+| `publishedAt` | `DateTime?` | `@map("published_at") @db.Timestamptz(6)` |
+| `createdAt` | `DateTime` | `@default(now()) @map("created_at") @db.Timestamptz(6)` |
+| `updatedAt` | `DateTime` | `@updatedAt @map("updated_at") @db.Timestamptz(6)` |
+| `deletedAt` | `DateTime?` | `@map("deleted_at") @db.Timestamptz(6)` |
+| `calendarEntry` | `ContentCalendarEntry` | `@relation(fields: [calendarEntryId], references: [id], onDelete: Cascade)` |
+| `artifact` | `ContentArtifact` | `@relation(fields: [artifactId], references: [id], onDelete: Cascade)` |
+| `integrationConnection` | `IntegrationConnection?` | `@relation(fields: [integrationConnectionId], references: [id], onDelete: SetNull)` |
+| `metrics` | `ContentMetric[]` | `` |
+
+**Model constraints/indexes:**
+
+- `@@unique([integrationConnectionId, providerPostId])`
+- `@@index([status, createdAt])`
+- `@@map("content_publish_events")`
+
+### ContentMetric
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `id` | `String` | `@id @default(uuid()) @db.Uuid` |
+| `artifactId` | `String` | `@map("artifact_id") @db.Uuid` |
+| `publishEventId` | `String?` | `@map("publish_event_id") @db.Uuid` |
+| `metric` | `String` | `@db.VarChar(100)` |
+| `value` | `Decimal` | `@db.Decimal(18, 4)` |
+| `source` | `String` | `@db.VarChar(100)` |
+| `observedAt` | `DateTime` | `@map("observed_at") @db.Timestamptz(6)` |
+| `metadata` | `Json?` | `` |
+| `createdAt` | `DateTime` | `@default(now()) @map("created_at") @db.Timestamptz(6)` |
+| `deletedAt` | `DateTime?` | `@map("deleted_at") @db.Timestamptz(6)` |
+| `artifact` | `ContentArtifact` | `@relation(fields: [artifactId], references: [id], onDelete: Cascade)` |
+| `publishEvent` | `ContentPublishEvent?` | `@relation(fields: [publishEventId], references: [id], onDelete: SetNull)` |
+
+**Model constraints/indexes:**
+
+- `@@unique([artifactId, metric, source, observedAt])`
+- `@@index([artifactId, observedAt(sort: Desc)])`
+- `@@map("content_metrics")`
+
+### SourcedLead
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `id` | `String` | `@id @default(uuid()) @db.Uuid` |
+| `clientId` | `String?` | `@map("client_id") @db.Uuid` |
+| `scope` | `LeadScope` | `` |
+| `name` | `String` | `@db.VarChar(255)` |
+| `company` | `String?` | `@db.VarChar(255)` |
+| `title` | `String?` | `@db.VarChar(255)` |
+| `email` | `String?` | `@db.VarChar(320)` |
+| `phone` | `String?` | `@db.VarChar(50)` |
+| `linkedinUrl` | `String?` | `@map("linkedin_url") @db.VarChar(1000)` |
+| `companyDomain` | `String?` | `@map("company_domain") @db.VarChar(255)` |
+| `source` | `IntegrationProvider` | `` |
+| `providerLeadId` | `String?` | `@map("provider_lead_id") @db.VarChar(255)` |
+| `dateFound` | `DateTime` | `@default(now()) @map("date_found") @db.Timestamptz(6)` |
+| `fitScore` | `Int?` | `@map("fit_score")` |
+| `fitExplanation` | `String?` | `@map("fit_explanation")` |
+| `category` | `SourcedLeadCategory?` | `` |
+| `stage` | `SourcedLeadStage` | `@default(SOURCED)` |
+| `isCompetitor` | `Boolean` | `@default(false) @map("is_competitor")` |
+| `isBlockedDomain` | `Boolean` | `@default(false) @map("is_blocked_domain")` |
+| `dedupeFingerprint` | `String?` | `@map("dedupe_fingerprint") @db.VarChar(128)` |
+| `createdAt` | `DateTime` | `@default(now()) @map("created_at") @db.Timestamptz(6)` |
+| `updatedAt` | `DateTime` | `@updatedAt @map("updated_at") @db.Timestamptz(6)` |
+| `archivedAt` | `DateTime?` | `@map("archived_at") @db.Timestamptz(6)` |
+| `deletedAt` | `DateTime?` | `@map("deleted_at") @db.Timestamptz(6)` |
+| `client` | `Client?` | `@relation(fields: [clientId], references: [id], onDelete: Cascade)` |
+| `research` | `LeadResearch[]` | `` |
+| `sequences` | `OutreachSequence[]` | `` |
+| `events` | `OutreachEvent[]` | `` |
+| `communications` | `Communication[]` | `` |
+| `conversations` | `ChatbotConversation[]` | `` |
+
+**Model constraints/indexes:**
+
+- `@@unique([scope, clientId, source, providerLeadId])`
+- `@@index([clientId, stage])`
+- `@@index([email])`
+- `@@index([companyDomain])`
+- `@@index([dedupeFingerprint])`
+- `@@map("sourced_leads")`
+
+### LeadResearch
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `id` | `String` | `@id @default(uuid()) @db.Uuid` |
+| `sourcedLeadId` | `String` | `@map("sourced_lead_id") @db.Uuid` |
+| `agentRunId` | `String?` | `@map("agent_run_id") @db.Uuid` |
+| `brief` | `String` | `` |
+| `citations` | `Json` | `` |
+| `researchedAt` | `DateTime` | `@default(now()) @map("researched_at") @db.Timestamptz(6)` |
+| `createdAt` | `DateTime` | `@default(now()) @map("created_at") @db.Timestamptz(6)` |
+| `updatedAt` | `DateTime` | `@updatedAt @map("updated_at") @db.Timestamptz(6)` |
+| `deletedAt` | `DateTime?` | `@map("deleted_at") @db.Timestamptz(6)` |
+| `sourcedLead` | `SourcedLead` | `@relation(fields: [sourcedLeadId], references: [id], onDelete: Cascade)` |
+| `agentRun` | `AgentRun?` | `@relation(fields: [agentRunId], references: [id], onDelete: SetNull)` |
+
+**Model constraints/indexes:**
+
+- `@@index([sourcedLeadId, researchedAt(sort: Desc)])`
+- `@@map("lead_research")`
+
+### OutreachSequence
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `id` | `String` | `@id @default(uuid()) @db.Uuid` |
+| `sourcedLeadId` | `String` | `@map("sourced_lead_id") @db.Uuid` |
+| `approvalId` | `String?` | `@map("approval_id") @db.Uuid` |
+| `version` | `Int` | `` |
+| `status` | `OutreachStatus` | `@default(DRAFT)` |
+| `subject` | `String?` | `@db.VarChar(500)` |
+| `steps` | `Json` | `` |
+| `channel` | `String` | `@db.VarChar(50)` |
+| `approvedAt` | `DateTime?` | `@map("approved_at") @db.Timestamptz(6)` |
+| `createdAt` | `DateTime` | `@default(now()) @map("created_at") @db.Timestamptz(6)` |
+| `updatedAt` | `DateTime` | `@updatedAt @map("updated_at") @db.Timestamptz(6)` |
+| `deletedAt` | `DateTime?` | `@map("deleted_at") @db.Timestamptz(6)` |
+| `sourcedLead` | `SourcedLead` | `@relation(fields: [sourcedLeadId], references: [id], onDelete: Cascade)` |
+| `approval` | `Approval?` | `@relation(fields: [approvalId], references: [id], onDelete: SetNull)` |
+| `events` | `OutreachEvent[]` | `` |
+
+**Model constraints/indexes:**
+
+- `@@unique([sourcedLeadId, version])`
+- `@@index([status])`
+- `@@map("outreach_sequences")`
+
+### OutreachEvent
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `id` | `String` | `@id @default(uuid()) @db.Uuid` |
+| `sourcedLeadId` | `String` | `@map("sourced_lead_id") @db.Uuid` |
+| `sequenceId` | `String?` | `@map("sequence_id") @db.Uuid` |
+| `communicationId` | `String?` | `@unique @map("communication_id") @db.Uuid` |
+| `status` | `OutreachStatus` | `` |
+| `stepNumber` | `Int?` | `@map("step_number")` |
+| `providerEventId` | `String?` | `@map("provider_event_id") @db.VarChar(255)` |
+| `scheduledFor` | `DateTime?` | `@map("scheduled_for") @db.Timestamptz(6)` |
+| `occurredAt` | `DateTime` | `@default(now()) @map("occurred_at") @db.Timestamptz(6)` |
+| `metadata` | `Json?` | `` |
+| `createdAt` | `DateTime` | `@default(now()) @map("created_at") @db.Timestamptz(6)` |
+| `deletedAt` | `DateTime?` | `@map("deleted_at") @db.Timestamptz(6)` |
+| `sourcedLead` | `SourcedLead` | `@relation(fields: [sourcedLeadId], references: [id], onDelete: Cascade)` |
+| `sequence` | `OutreachSequence?` | `@relation(fields: [sequenceId], references: [id], onDelete: SetNull)` |
+| `communication` | `Communication?` | `@relation(fields: [communicationId], references: [id], onDelete: SetNull)` |
+
+**Model constraints/indexes:**
+
+- `@@unique([sequenceId, providerEventId])`
+- `@@index([sourcedLeadId, occurredAt(sort: Desc)])`
+- `@@map("outreach_events")`
+
+### CrmLead
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `id` | `String` | `@id @default(uuid()) @db.Uuid` |
+| `convertedClientId` | `String?` | `@map("converted_client_id") @db.Uuid` |
+| `name` | `String` | `@db.VarChar(255)` |
+| `email` | `String?` | `@db.VarChar(320)` |
+| `phone` | `String?` | `@db.VarChar(50)` |
+| `company` | `String?` | `@db.VarChar(255)` |
+| `source` | `String?` | `@db.VarChar(100)` |
+| `interest` | `String?` | `` |
+| `notes` | `String?` | `` |
+| `stage` | `CrmLeadStage` | `@default(NEW)` |
+| `value` | `Decimal?` | `@db.Decimal(12, 2)` |
+| `expectedCloseProbability` | `Decimal?` | `@map("expected_close_probability") @db.Decimal(5, 2)` |
+| `followUpAt` | `DateTime?` | `@map("follow_up_at") @db.Timestamptz(6)` |
+| `createdAt` | `DateTime` | `@default(now()) @map("created_at") @db.Timestamptz(6)` |
+| `updatedAt` | `DateTime` | `@updatedAt @map("updated_at") @db.Timestamptz(6)` |
+| `archivedAt` | `DateTime?` | `@map("archived_at") @db.Timestamptz(6)` |
+| `deletedAt` | `DateTime?` | `@map("deleted_at") @db.Timestamptz(6)` |
+| `convertedClient` | `Client?` | `@relation("ConvertedClient", fields: [convertedClientId], references: [id], onDelete: SetNull)` |
+| `stageHistory` | `CrmLeadStageHistory[]` | `` |
+| `proposals` | `Proposal[]` | `` |
+| `communications` | `Communication[]` | `` |
+
+**Model constraints/indexes:**
+
+- `@@index([stage, followUpAt])`
+- `@@index([email])`
+- `@@map("crm_leads")`
+
+### CrmLeadStageHistory
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `id` | `String` | `@id @default(uuid()) @db.Uuid` |
+| `crmLeadId` | `String` | `@map("crm_lead_id") @db.Uuid` |
+| `fromStage` | `CrmLeadStage?` | `@map("from_stage")` |
+| `toStage` | `CrmLeadStage` | `@map("to_stage")` |
+| `reason` | `String?` | `` |
+| `changedBy` | `String?` | `@map("changed_by") @db.VarChar(255)` |
+| `changedAt` | `DateTime` | `@default(now()) @map("changed_at") @db.Timestamptz(6)` |
+| `crmLead` | `CrmLead` | `@relation(fields: [crmLeadId], references: [id], onDelete: Cascade)` |
+
+**Model constraints/indexes:**
+
+- `@@index([crmLeadId, changedAt])`
+- `@@map("crm_lead_stage_history")`
+
+### Proposal
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `id` | `String` | `@id @default(uuid()) @db.Uuid` |
+| `crmLeadId` | `String` | `@map("crm_lead_id") @db.Uuid` |
+| `title` | `String` | `@db.VarChar(500)` |
+| `status` | `ProposalStatus` | `@default(DRAFT)` |
+| `currentVersion` | `Int` | `@default(1) @map("current_version")` |
+| `sentAt` | `DateTime?` | `@map("sent_at") @db.Timestamptz(6)` |
+| `viewedAt` | `DateTime?` | `@map("viewed_at") @db.Timestamptz(6)` |
+| `acceptedAt` | `DateTime?` | `@map("accepted_at") @db.Timestamptz(6)` |
+| `expiresAt` | `DateTime?` | `@map("expires_at") @db.Timestamptz(6)` |
+| `createdAt` | `DateTime` | `@default(now()) @map("created_at") @db.Timestamptz(6)` |
+| `updatedAt` | `DateTime` | `@updatedAt @map("updated_at") @db.Timestamptz(6)` |
+| `archivedAt` | `DateTime?` | `@map("archived_at") @db.Timestamptz(6)` |
+| `deletedAt` | `DateTime?` | `@map("deleted_at") @db.Timestamptz(6)` |
+| `crmLead` | `CrmLead` | `@relation(fields: [crmLeadId], references: [id], onDelete: Cascade)` |
+| `versions` | `ProposalVersion[]` | `` |
+
+**Model constraints/indexes:**
+
+- `@@index([crmLeadId, status])`
+- `@@map("proposals")`
+
+### ProposalVersion
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `id` | `String` | `@id @default(uuid()) @db.Uuid` |
+| `proposalId` | `String` | `@map("proposal_id") @db.Uuid` |
+| `fileId` | `String?` | `@unique @map("file_id") @db.Uuid` |
+| `version` | `Int` | `` |
+| `scope` | `String` | `` |
+| `deliverables` | `Json` | `` |
+| `timeline` | `String` | `` |
+| `pricing` | `Json` | `` |
+| `terms` | `String` | `` |
+| `changeSummary` | `String?` | `@map("change_summary")` |
+| `contentHash` | `String` | `@map("content_hash") @db.VarChar(128)` |
+| `createdAt` | `DateTime` | `@default(now()) @map("created_at") @db.Timestamptz(6)` |
+| `deletedAt` | `DateTime?` | `@map("deleted_at") @db.Timestamptz(6)` |
+| `proposal` | `Proposal` | `@relation(fields: [proposalId], references: [id], onDelete: Cascade)` |
+| `file` | `FileMetadata?` | `@relation(fields: [fileId], references: [id], onDelete: SetNull)` |
+
+**Model constraints/indexes:**
+
+- `@@unique([proposalId, version])`
+- `@@map("proposal_versions")`
+
+### Invoice
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `id` | `String` | `@id @default(uuid()) @db.Uuid` |
+| `clientId` | `String` | `@map("client_id") @db.Uuid` |
+| `stripeInvoiceId` | `String?` | `@unique @map("stripe_invoice_id") @db.VarChar(255)` |
+| `type` | `InvoiceType` | `` |
+| `status` | `InvoiceStatus` | `@default(DRAFT)` |
+| `amount` | `Decimal` | `@db.Decimal(12, 2)` |
+| `currency` | `String` | `@default("USD") @db.Char(3)` |
+| `lineItems` | `Json` | `@map("line_items")` |
+| `dueDate` | `DateTime` | `@map("due_date") @db.Date` |
+| `paymentTerms` | `String?` | `@map("payment_terms") @db.VarChar(255)` |
+| `hostedInvoiceUrl` | `String?` | `@map("hosted_invoice_url") @db.VarChar(2000)` |
+| `paidAt` | `DateTime?` | `@map("paid_at") @db.Timestamptz(6)` |
+| `sentAt` | `DateTime?` | `@map("sent_at") @db.Timestamptz(6)` |
+| `notes` | `String?` | `` |
+| `createdAt` | `DateTime` | `@default(now()) @map("created_at") @db.Timestamptz(6)` |
+| `updatedAt` | `DateTime` | `@updatedAt @map("updated_at") @db.Timestamptz(6)` |
+| `archivedAt` | `DateTime?` | `@map("archived_at") @db.Timestamptz(6)` |
+| `deletedAt` | `DateTime?` | `@map("deleted_at") @db.Timestamptz(6)` |
+| `client` | `Client` | `@relation(fields: [clientId], references: [id], onDelete: Restrict)` |
+| `items` | `InvoiceLineItem[]` | `` |
+| `payments` | `Payment[]` | `` |
+| `costEntries` | `CostLedgerEntry[]` | `` |
+
+**Model constraints/indexes:**
+
+- `@@index([clientId, status])`
+- `@@index([dueDate, status])`
+- `@@map("invoices")`
+
+### InvoiceLineItem
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `id` | `String` | `@id @default(uuid()) @db.Uuid` |
+| `invoiceId` | `String` | `@map("invoice_id") @db.Uuid` |
+| `position` | `Int` | `` |
+| `serviceType` | `String` | `@map("service_type") @db.VarChar(150)` |
+| `description` | `String?` | `` |
+| `quantity` | `Decimal` | `@db.Decimal(12, 4)` |
+| `rate` | `Decimal` | `@db.Decimal(12, 2)` |
+| `amount` | `Decimal` | `@db.Decimal(12, 2)` |
+| `createdAt` | `DateTime` | `@default(now()) @map("created_at") @db.Timestamptz(6)` |
+| `deletedAt` | `DateTime?` | `@map("deleted_at") @db.Timestamptz(6)` |
+| `invoice` | `Invoice` | `@relation(fields: [invoiceId], references: [id], onDelete: Cascade)` |
+
+**Model constraints/indexes:**
+
+- `@@unique([invoiceId, position])`
+- `@@map("invoice_line_items")`
+
+### Payment
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `id` | `String` | `@id @default(uuid()) @db.Uuid` |
+| `invoiceId` | `String` | `@map("invoice_id") @db.Uuid` |
+| `clientId` | `String` | `@map("client_id") @db.Uuid` |
+| `stripePaymentId` | `String?` | `@unique @map("stripe_payment_id") @db.VarChar(255)` |
+| `status` | `PaymentStatus` | `@default(PENDING)` |
+| `amount` | `Decimal` | `@db.Decimal(12, 2)` |
+| `currency` | `String` | `@default("USD") @db.Char(3)` |
+| `paidAt` | `DateTime?` | `@map("paid_at") @db.Timestamptz(6)` |
+| `failureReason` | `String?` | `@map("failure_reason")` |
+| `createdAt` | `DateTime` | `@default(now()) @map("created_at") @db.Timestamptz(6)` |
+| `updatedAt` | `DateTime` | `@updatedAt @map("updated_at") @db.Timestamptz(6)` |
+| `deletedAt` | `DateTime?` | `@map("deleted_at") @db.Timestamptz(6)` |
+| `invoice` | `Invoice` | `@relation(fields: [invoiceId], references: [id], onDelete: Restrict)` |
+| `client` | `Client` | `@relation(fields: [clientId], references: [id], onDelete: Restrict)` |
+| `costEntries` | `CostLedgerEntry[]` | `` |
+
+**Model constraints/indexes:**
+
+- `@@index([invoiceId, status])`
+- `@@index([clientId, paidAt])`
+- `@@map("payments")`
+
+### Expense
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `id` | `String` | `@id @default(uuid()) @db.Uuid` |
+| `clientId` | `String?` | `@map("client_id") @db.Uuid` |
+| `receiptFileId` | `String?` | `@unique @map("receipt_file_id") @db.Uuid` |
+| `category` | `ExpenseCategory` | `` |
+| `vendor` | `String?` | `@db.VarChar(255)` |
+| `amount` | `Decimal` | `@db.Decimal(12, 2)` |
+| `currency` | `String` | `@default("USD") @db.Char(3)` |
+| `expenseDate` | `DateTime` | `@map("expense_date") @db.Date` |
+| `notes` | `String?` | `` |
+| `isAutomatic` | `Boolean` | `@default(false) @map("is_automatic")` |
+| `sourceRef` | `String?` | `@map("source_ref") @db.VarChar(255)` |
+| `createdAt` | `DateTime` | `@default(now()) @map("created_at") @db.Timestamptz(6)` |
+| `updatedAt` | `DateTime` | `@updatedAt @map("updated_at") @db.Timestamptz(6)` |
+| `archivedAt` | `DateTime?` | `@map("archived_at") @db.Timestamptz(6)` |
+| `deletedAt` | `DateTime?` | `@map("deleted_at") @db.Timestamptz(6)` |
+| `client` | `Client?` | `@relation(fields: [clientId], references: [id], onDelete: SetNull)` |
+| `receiptFile` | `FileMetadata?` | `@relation(fields: [receiptFileId], references: [id], onDelete: SetNull)` |
+| `costEntries` | `CostLedgerEntry[]` | `` |
+
+**Model constraints/indexes:**
+
+- `@@index([expenseDate, category])`
+- `@@index([clientId])`
+- `@@map("expenses")`
+
+### CostLedgerEntry
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `id` | `String` | `@id @default(uuid()) @db.Uuid` |
+| `clientId` | `String?` | `@map("client_id") @db.Uuid` |
+| `agentId` | `String?` | `@map("agent_id") @db.Uuid` |
+| `agentRunId` | `String?` | `@map("agent_run_id") @db.Uuid` |
+| `invoiceId` | `String?` | `@map("invoice_id") @db.Uuid` |
+| `paymentId` | `String?` | `@map("payment_id") @db.Uuid` |
+| `expenseId` | `String?` | `@map("expense_id") @db.Uuid` |
+| `entryType` | `LedgerEntryType` | `@map("entry_type")` |
+| `category` | `String` | `@db.VarChar(100)` |
+| `description` | `String?` | `` |
+| `amount` | `Decimal` | `@db.Decimal(14, 6)` |
+| `currency` | `String` | `@default("USD") @db.Char(3)` |
+| `occurredAt` | `DateTime` | `@map("occurred_at") @db.Timestamptz(6)` |
+| `sourceType` | `String` | `@map("source_type") @db.VarChar(100)` |
+| `sourceId` | `String?` | `@map("source_id") @db.Uuid` |
+| `idempotencyKey` | `String?` | `@unique @map("idempotency_key") @db.VarChar(255)` |
+| `createdAt` | `DateTime` | `@default(now()) @map("created_at") @db.Timestamptz(6)` |
+| `deletedAt` | `DateTime?` | `@map("deleted_at") @db.Timestamptz(6)` |
+| `client` | `Client?` | `@relation(fields: [clientId], references: [id], onDelete: SetNull)` |
+| `agent` | `Agent?` | `@relation(fields: [agentId], references: [id], onDelete: SetNull)` |
+| `agentRun` | `AgentRun?` | `@relation(fields: [agentRunId], references: [id], onDelete: SetNull)` |
+| `invoice` | `Invoice?` | `@relation(fields: [invoiceId], references: [id], onDelete: SetNull)` |
+| `payment` | `Payment?` | `@relation(fields: [paymentId], references: [id], onDelete: SetNull)` |
+| `expense` | `Expense?` | `@relation(fields: [expenseId], references: [id], onDelete: SetNull)` |
+
+**Model constraints/indexes:**
+
+- `@@index([occurredAt, entryType])`
+- `@@index([clientId, occurredAt])`
+- `@@index([agentId, occurredAt])`
+- `@@map("cost_ledger_entries")`
+
+### KnowledgeEntry
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `id` | `String` | `@id @default(uuid()) @db.Uuid` |
+| `clientId` | `String?` | `@map("client_id") @db.Uuid` |
+| `createdByAgentId` | `String?` | `@map("created_by_agent_id") @db.Uuid` |
+| `title` | `String` | `@db.VarChar(500)` |
+| `category` | `KnowledgeCategory` | `` |
+| `content` | `String` | `` |
+| `tags` | `String[]` | `@default([])` |
+| `embedding` | `Unsupported("vector(1536)")?` | `` |
+| `embeddingModel` | `String?` | `@map("embedding_model") @db.VarChar(100)` |
+| `linkedEntityIds` | `String[]` | `@default([]) @map("linked_entity_ids") @db.Uuid` |
+| `version` | `Int` | `@default(1)` |
+| `accessCount` | `Int` | `@default(0) @map("access_count")` |
+| `lastAccessedAt` | `DateTime?` | `@map("last_accessed_at") @db.Timestamptz(6)` |
+| `createdAt` | `DateTime` | `@default(now()) @map("created_at") @db.Timestamptz(6)` |
+| `updatedAt` | `DateTime` | `@updatedAt @map("updated_at") @db.Timestamptz(6)` |
+| `archivedAt` | `DateTime?` | `@map("archived_at") @db.Timestamptz(6)` |
+| `deletedAt` | `DateTime?` | `@map("deleted_at") @db.Timestamptz(6)` |
+| `client` | `Client?` | `@relation(fields: [clientId], references: [id], onDelete: Cascade)` |
+| `createdByAgent` | `Agent?` | `@relation(fields: [createdByAgentId], references: [id], onDelete: SetNull)` |
+| `versions` | `KnowledgeVersion[]` | `` |
+| `outgoingLinks` | `KnowledgeLink[]` | `@relation("KnowledgeLinkSource")` |
+| `incomingLinks` | `KnowledgeLink[]` | `@relation("KnowledgeLinkTarget")` |
+| `sop` | `Sop?` | `` |
+
+**Model constraints/indexes:**
+
+- `@@index([category, archivedAt])`
+- `@@index([clientId, category])`
+- `@@index([tags], type: Gin)`
+- `@@map("knowledge_entries")`
+
+### KnowledgeVersion
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `id` | `String` | `@id @default(uuid()) @db.Uuid` |
+| `knowledgeId` | `String` | `@map("knowledge_id") @db.Uuid` |
+| `version` | `Int` | `` |
+| `title` | `String` | `@db.VarChar(500)` |
+| `category` | `KnowledgeCategory` | `` |
+| `content` | `String` | `` |
+| `tags` | `String[]` | `@default([])` |
+| `embedding` | `Unsupported("vector(1536)")?` | `` |
+| `embeddingModel` | `String?` | `@map("embedding_model") @db.VarChar(100)` |
+| `changeSummary` | `String?` | `@map("change_summary")` |
+| `createdBy` | `String?` | `@map("created_by") @db.VarChar(255)` |
+| `createdAt` | `DateTime` | `@default(now()) @map("created_at") @db.Timestamptz(6)` |
+| `deletedAt` | `DateTime?` | `@map("deleted_at") @db.Timestamptz(6)` |
+| `knowledge` | `KnowledgeEntry` | `@relation(fields: [knowledgeId], references: [id], onDelete: Cascade)` |
+
+**Model constraints/indexes:**
+
+- `@@unique([knowledgeId, version])`
+- `@@index([knowledgeId, createdAt(sort: Desc)])`
+- `@@map("knowledge_versions")`
+
+### KnowledgeLink
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `id` | `String` | `@id @default(uuid()) @db.Uuid` |
+| `sourceKnowledgeId` | `String` | `@map("source_knowledge_id") @db.Uuid` |
+| `targetType` | `KnowledgeLinkType` | `@map("target_type")` |
+| `targetId` | `String` | `@map("target_id") @db.Uuid` |
+| `targetKnowledgeId` | `String?` | `@map("target_knowledge_id") @db.Uuid` |
+| `clientId` | `String?` | `@map("client_id") @db.Uuid` |
+| `agentId` | `String?` | `@map("agent_id") @db.Uuid` |
+| `projectId` | `String?` | `@map("project_id") @db.Uuid` |
+| `sopId` | `String?` | `@map("sop_id") @db.Uuid` |
+| `label` | `String?` | `@db.VarChar(255)` |
+| `createdAt` | `DateTime` | `@default(now()) @map("created_at") @db.Timestamptz(6)` |
+| `deletedAt` | `DateTime?` | `@map("deleted_at") @db.Timestamptz(6)` |
+| `sourceKnowledge` | `KnowledgeEntry` | `@relation("KnowledgeLinkSource", fields: [sourceKnowledgeId], references: [id], onDelete: Cascade)` |
+| `targetKnowledge` | `KnowledgeEntry?` | `@relation("KnowledgeLinkTarget", fields: [targetKnowledgeId], references: [id], onDelete: Cascade)` |
+| `client` | `Client?` | `@relation(fields: [clientId], references: [id], onDelete: Cascade)` |
+| `agent` | `Agent?` | `@relation(fields: [agentId], references: [id], onDelete: Cascade)` |
+| `project` | `Project?` | `@relation(fields: [projectId], references: [id], onDelete: Cascade)` |
+| `sop` | `Sop?` | `@relation(fields: [sopId], references: [id], onDelete: Cascade)` |
+
+**Model constraints/indexes:**
+
+- `@@unique([sourceKnowledgeId, targetType, targetId])`
+- `@@index([targetType, targetId])`
+- `@@map("knowledge_links")`
+
+### Sop
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `id` | `String` | `@id @default(uuid()) @db.Uuid` |
+| `clientId` | `String?` | `@map("client_id") @db.Uuid` |
+| `agentId` | `String?` | `@map("agent_id") @db.Uuid` |
+| `knowledgeEntryId` | `String?` | `@unique @map("knowledge_entry_id") @db.Uuid` |
+| `title` | `String` | `@db.VarChar(500)` |
+| `materials` | `String[]` | `@default([])` |
+| `expectedOutcome` | `String` | `@map("expected_outcome")` |
+| `currentVersion` | `Int` | `@default(1) @map("current_version")` |
+| `lastTestedAt` | `DateTime?` | `@map("last_tested_at") @db.Timestamptz(6)` |
+| `usageCount` | `Int` | `@default(0) @map("usage_count")` |
+| `lastExecutedAt` | `DateTime?` | `@map("last_executed_at") @db.Timestamptz(6)` |
+| `createdAt` | `DateTime` | `@default(now()) @map("created_at") @db.Timestamptz(6)` |
+| `updatedAt` | `DateTime` | `@updatedAt @map("updated_at") @db.Timestamptz(6)` |
+| `archivedAt` | `DateTime?` | `@map("archived_at") @db.Timestamptz(6)` |
+| `deletedAt` | `DateTime?` | `@map("deleted_at") @db.Timestamptz(6)` |
+| `client` | `Client?` | `@relation(fields: [clientId], references: [id], onDelete: Cascade)` |
+| `agent` | `Agent?` | `@relation(fields: [agentId], references: [id], onDelete: SetNull)` |
+| `knowledgeEntry` | `KnowledgeEntry?` | `@relation(fields: [knowledgeEntryId], references: [id], onDelete: SetNull)` |
+| `steps` | `SopStep[]` | `` |
+| `executions` | `SopExecution[]` | `` |
+| `knowledgeLinks` | `KnowledgeLink[]` | `` |
+
+**Model constraints/indexes:**
+
+- `@@index([clientId, archivedAt])`
+- `@@index([lastExecutedAt])`
+- `@@map("sops")`
+
+### SopStep
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `id` | `String` | `@id @default(uuid()) @db.Uuid` |
+| `sopId` | `String` | `@map("sop_id") @db.Uuid` |
+| `sopVersion` | `Int` | `@map("sop_version")` |
+| `position` | `Int` | `` |
+| `title` | `String` | `@db.VarChar(500)` |
+| `instructions` | `String` | `` |
+| `expectedResult` | `String?` | `@map("expected_result")` |
+| `isOptional` | `Boolean` | `@default(false) @map("is_optional")` |
+| `createdAt` | `DateTime` | `@default(now()) @map("created_at") @db.Timestamptz(6)` |
+| `deletedAt` | `DateTime?` | `@map("deleted_at") @db.Timestamptz(6)` |
+| `sop` | `Sop` | `@relation(fields: [sopId], references: [id], onDelete: Cascade)` |
+
+**Model constraints/indexes:**
+
+- `@@unique([sopId, sopVersion, position])`
+- `@@map("sop_steps")`
+
+### SopExecution
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `id` | `String` | `@id @default(uuid()) @db.Uuid` |
+| `sopId` | `String` | `@map("sop_id") @db.Uuid` |
+| `agentRunId` | `String?` | `@map("agent_run_id") @db.Uuid` |
+| `sopVersion` | `Int` | `@map("sop_version")` |
+| `status` | `SopExecutionStatus` | `@default(RUNNING)` |
+| `stepResults` | `Json?` | `@map("step_results")` |
+| `startedAt` | `DateTime` | `@default(now()) @map("started_at") @db.Timestamptz(6)` |
+| `completedAt` | `DateTime?` | `@map("completed_at") @db.Timestamptz(6)` |
+| `errorMessage` | `String?` | `@map("error_message")` |
+| `createdAt` | `DateTime` | `@default(now()) @map("created_at") @db.Timestamptz(6)` |
+| `deletedAt` | `DateTime?` | `@map("deleted_at") @db.Timestamptz(6)` |
+| `sop` | `Sop` | `@relation(fields: [sopId], references: [id], onDelete: Restrict)` |
+| `agentRun` | `AgentRun?` | `@relation(fields: [agentRunId], references: [id], onDelete: SetNull)` |
+
+**Model constraints/indexes:**
+
+- `@@index([sopId, startedAt(sort: Desc)])`
+- `@@map("sop_executions")`
+
+### GraphNode
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `id` | `String` | `@id @default(uuid()) @db.Uuid` |
+| `type` | `GraphNodeType` | `` |
+| `entityId` | `String?` | `@map("entity_id") @db.Uuid` |
+| `stableKey` | `String` | `@unique @map("stable_key") @db.VarChar(255)` |
+| `label` | `String` | `@db.VarChar(500)` |
+| `metadata` | `Json?` | `` |
+| `createdAt` | `DateTime` | `@default(now()) @map("created_at") @db.Timestamptz(6)` |
+| `updatedAt` | `DateTime` | `@updatedAt @map("updated_at") @db.Timestamptz(6)` |
+| `archivedAt` | `DateTime?` | `@map("archived_at") @db.Timestamptz(6)` |
+| `deletedAt` | `DateTime?` | `@map("deleted_at") @db.Timestamptz(6)` |
+| `outgoingEdges` | `GraphEdge[]` | `@relation("GraphEdgeSource")` |
+| `incomingEdges` | `GraphEdge[]` | `@relation("GraphEdgeTarget")` |
+
+**Model constraints/indexes:**
+
+- `@@unique([id, type])`
+- `@@unique([type, entityId])`
+- `@@index([type, archivedAt])`
+- `@@map("graph_nodes")`
+
+### GraphEdge
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `id` | `String` | `@id @default(uuid()) @db.Uuid` |
+| `sourceId` | `String` | `@map("source_id") @db.Uuid` |
+| `sourceType` | `GraphNodeType` | `@map("source_type")` |
+| `targetId` | `String` | `@map("target_id") @db.Uuid` |
+| `targetType` | `GraphNodeType` | `@map("target_type")` |
+| `edgeType` | `GraphEdgeType` | `@map("edge_type")` |
+| `provenance` | `GraphEdgeProvenance` | `@default(OWNER_EXPLICIT)` - added by `20260801000100_part_4_graph_foundation`; `SYSTEM_PROJECTION` rows follow source lifecycle and cannot be deleted via graph CRUD |
+| `label` | `String?` | `@db.VarChar(255)` |
+| `metadata` | `Json?` | `` |
+| `createdAt` | `DateTime` | `@default(now()) @map("created_at") @db.Timestamptz(6)` |
+| `updatedAt` | `DateTime` | `@updatedAt @map("updated_at") @db.Timestamptz(6)` |
+| `archivedAt` | `DateTime?` | `@map("archived_at") @db.Timestamptz(6)` |
+| `deletedAt` | `DateTime?` | `@map("deleted_at") @db.Timestamptz(6)` |
+| `source` | `GraphNode` | `@relation("GraphEdgeSource", fields: [sourceId, sourceType], references: [id, type], onDelete: Cascade)` |
+| `target` | `GraphNode` | `@relation("GraphEdgeTarget", fields: [targetId, targetType], references: [id, type], onDelete: Cascade)` |
+
+**Model constraints/indexes:**
+
+- `@@unique([sourceId, sourceType, targetId, targetType, edgeType])` - full-lifecycle natural key; owner-edge recreate restores the soft-deleted row in place
+- `@@index([sourceType, sourceId])`
+- `@@index([targetType, targetId])`
+- `@@index([edgeType])`
+- `graph_edges_lifecycle_idx (provenance, deleted_at, archived_at, updated_at DESC)` - migration SQL
+- `graph_edges_source_live_lookup_idx (source_id, deleted_at, archived_at)` - migration SQL
+- `graph_edges_target_live_lookup_idx (target_id, deleted_at, archived_at)` - migration SQL
+- `@@map("graph_edges")`
+
+Part 4 also adds `graph_nodes_lifecycle_idx` and the partial `graph_nodes_live_label_trgm_idx` GIN trigram index (live rows only) for fuzzy search.
+
+### Notification
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `id` | `String` | `@id @default(uuid()) @db.Uuid` |
+| `type` | `NotificationType` | `` |
+| `priority` | `NotificationPriority` | `` |
+| `title` | `String` | `@db.VarChar(500)` |
+| `body` | `String?` | `` |
+| `entityType` | `String?` | `@map("entity_type") @db.VarChar(100)` |
+| `entityId` | `String?` | `@map("entity_id") @db.Uuid` |
+| `channels` | `NotificationChannel[]` | `@default([])` |
+| `dedupeKey` | `String?` | `@unique @map("dedupe_key") @db.VarChar(255)` |
+| `read` | `Boolean` | `@default(false)` |
+| `sentAt` | `DateTime` | `@default(now()) @map("sent_at") @db.Timestamptz(6)` |
+| `readAt` | `DateTime?` | `@map("read_at") @db.Timestamptz(6)` |
+| `createdAt` | `DateTime` | `@default(now()) @map("created_at") @db.Timestamptz(6)` |
+| `archivedAt` | `DateTime?` | `@map("archived_at") @db.Timestamptz(6)` |
+| `deletedAt` | `DateTime?` | `@map("deleted_at") @db.Timestamptz(6)` |
+| `deliveries` | `NotificationDelivery[]` | `` |
+
+**Model constraints/indexes:**
+
+- `@@index([read, sentAt(sort: Desc)])`
+- `@@index([type, priority])`
+- `@@index([entityType, entityId])`
+- `@@map("notifications")`
+
+### NotificationPreference
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `id` | `String` | `@id @default(uuid()) @db.Uuid` |
+| `type` | `NotificationType` | `@unique` |
+| `enabled` | `Boolean` | `@default(true)` |
+| `channels` | `NotificationChannel[]` | `@default([])` |
+| `quietHoursStart` | `DateTime?` | `@map("quiet_hours_start") @db.Time(0)` |
+| `quietHoursEnd` | `DateTime?` | `@map("quiet_hours_end") @db.Time(0)` |
+| `timezone` | `String` | `@default("UTC") @db.VarChar(100)` |
+| `includeInDigest` | `Boolean` | `@default(false) @map("include_in_digest")` |
+| `createdAt` | `DateTime` | `@default(now()) @map("created_at") @db.Timestamptz(6)` |
+| `updatedAt` | `DateTime` | `@updatedAt @map("updated_at") @db.Timestamptz(6)` |
+| `deletedAt` | `DateTime?` | `@map("deleted_at") @db.Timestamptz(6)` |
+
+**Model constraints/indexes:**
+
+- `@@map("notification_preferences")`
+
+### NotificationDelivery
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `id` | `String` | `@id @default(uuid()) @db.Uuid` |
+| `notificationId` | `String` | `@map("notification_id") @db.Uuid` |
+| `integrationConnectionId` | `String?` | `@map("integration_connection_id") @db.Uuid` |
+| `channel` | `NotificationChannel` | `` |
+| `status` | `DeliveryStatus` | `@default(PENDING)` |
+| `attempt` | `Int` | `@default(0)` |
+| `providerMessageId` | `String?` | `@map("provider_message_id") @db.VarChar(255)` |
+| `nextAttemptAt` | `DateTime?` | `@map("next_attempt_at") @db.Timestamptz(6)` |
+| `deliveredAt` | `DateTime?` | `@map("delivered_at") @db.Timestamptz(6)` |
+| `errorMessage` | `String?` | `@map("error_message")` |
+| `createdAt` | `DateTime` | `@default(now()) @map("created_at") @db.Timestamptz(6)` |
+| `updatedAt` | `DateTime` | `@updatedAt @map("updated_at") @db.Timestamptz(6)` |
+| `deletedAt` | `DateTime?` | `@map("deleted_at") @db.Timestamptz(6)` |
+| `notification` | `Notification` | `@relation(fields: [notificationId], references: [id], onDelete: Cascade)` |
+| `integrationConnection` | `IntegrationConnection?` | `@relation(fields: [integrationConnectionId], references: [id], onDelete: SetNull)` |
+
+**Model constraints/indexes:**
+
+- `@@unique([notificationId, channel])`
+- `@@index([status, nextAttemptAt])`
+- `@@map("notification_deliveries")`
+
+### CredentialReference
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `id` | `String` | `@id @default(uuid()) @db.Uuid` |
+| `provider` | `IntegrationProvider` | `` |
+| `label` | `String` | `@db.VarChar(255)` |
+| `vaultReference` | `String` | `@unique @map("vault_reference") @db.VarChar(500)` |
+| `keyVersion` | `Int` | `@default(1) @map("key_version")` |
+| `lastRotatedAt` | `DateTime?` | `@map("last_rotated_at") @db.Timestamptz(6)` |
+| `createdAt` | `DateTime` | `@default(now()) @map("created_at") @db.Timestamptz(6)` |
+| `updatedAt` | `DateTime` | `@updatedAt @map("updated_at") @db.Timestamptz(6)` |
+| `archivedAt` | `DateTime?` | `@map("archived_at") @db.Timestamptz(6)` |
+| `deletedAt` | `DateTime?` | `@map("deleted_at") @db.Timestamptz(6)` |
+| `connections` | `IntegrationConnection[]` | `` |
+
+**Model constraints/indexes:**
+
+- `@@index([provider])`
+- `@@map("credential_references")`
+
+### IntegrationConnection
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `id` | `String` | `@id @default(uuid()) @db.Uuid` |
+| `clientId` | `String?` | `@map("client_id") @db.Uuid` |
+| `credentialReferenceId` | `String?` | `@map("credential_reference_id") @db.Uuid` |
+| `provider` | `IntegrationProvider` | `` |
+| `name` | `String` | `@db.VarChar(255)` |
+| `status` | `IntegrationStatus` | `@default(NOT_CONFIGURED)` |
+| `externalAccountId` | `String?` | `@map("external_account_id") @db.VarChar(255)` |
+| `scopes` | `String[]` | `@default([])` |
+| `safeMetadata` | `Json?` | `@map("safe_metadata")` |
+| `connectedAt` | `DateTime?` | `@map("connected_at") @db.Timestamptz(6)` |
+| `lastHealthCheckAt` | `DateTime?` | `@map("last_health_check_at") @db.Timestamptz(6)` |
+| `createdAt` | `DateTime` | `@default(now()) @map("created_at") @db.Timestamptz(6)` |
+| `updatedAt` | `DateTime` | `@updatedAt @map("updated_at") @db.Timestamptz(6)` |
+| `archivedAt` | `DateTime?` | `@map("archived_at") @db.Timestamptz(6)` |
+| `deletedAt` | `DateTime?` | `@map("deleted_at") @db.Timestamptz(6)` |
+| `client` | `Client?` | `@relation(fields: [clientId], references: [id], onDelete: Cascade)` |
+| `credentialReference` | `CredentialReference?` | `@relation(fields: [credentialReferenceId], references: [id], onDelete: SetNull)` |
+| `workflowBindings` | `WorkflowCredentialBinding[]` | `` |
+| `publishEvents` | `ContentPublishEvent[]` | `` |
+| `notificationDeliveries` | `NotificationDelivery[]` | `` |
+| `webhookReceipts` | `WebhookReceipt[]` | `` |
+| `communications` | `Communication[]` | `` |
+| `syncStates` | `IntegrationSyncState[]` | `` |
+
+**Model constraints/indexes:**
+
+- `@@unique([provider, externalAccountId])`
+- `@@index([clientId, provider])`
+- `@@index([status])`
+- `@@map("integration_connections")`
+
+### IntegrationSyncState
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `id` | `String` | `@id @default(uuid()) @db.Uuid` |
+| `integrationConnectionId` | `String` | `@map("integration_connection_id") @db.Uuid` |
+| `checkpointType` | `String` | `@map("checkpoint_type") @db.VarChar(100)` |
+| `checkpointValue` | `String?` | `@map("checkpoint_value") @db.VarChar(1000)` |
+| `status` | `IntegrationSyncStatus` | `@default(IDLE)` |
+| `lastSyncedAt` | `DateTime?` | `@map("last_synced_at") @db.Timestamptz(6)` |
+| `nextRetryAt` | `DateTime?` | `@map("next_retry_at") @db.Timestamptz(6)` |
+| `lastErrorCode` | `String?` | `@map("last_error_code") @db.VarChar(100)` |
+| `createdAt` | `DateTime` | `@default(now()) @map("created_at") @db.Timestamptz(6)` |
+| `updatedAt` | `DateTime` | `@updatedAt @map("updated_at") @db.Timestamptz(6)` |
+| `integrationConnection` | `IntegrationConnection` | `@relation(fields: [integrationConnectionId], references: [id], onDelete: Cascade)` |
+
+**Model constraints/indexes:**
+
+- `@@unique([integrationConnectionId, checkpointType])`
+- `@@index([status, nextRetryAt])`
+- `@@map("integration_sync_states")`
+
+### WebhookReceipt
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `id` | `String` | `@id @default(uuid()) @db.Uuid` |
+| `integrationConnectionId` | `String` | `@map("integration_connection_id") @db.Uuid` |
+| `provider` | `IntegrationProvider` | `` |
+| `providerEventId` | `String` | `@map("provider_event_id") @db.VarChar(255)` |
+| `eventType` | `String` | `@map("event_type") @db.VarChar(255)` |
+| `status` | `WebhookStatus` | `@default(RECEIVED)` |
+| `signatureValid` | `Boolean` | `@map("signature_valid")` |
+| `payloadHash` | `String` | `@map("payload_hash") @db.Char(64)` |
+| `rawPayload` | `Json?` | `@map("raw_payload")` |
+| `headers` | `Json?` | `` |
+| `attempt` | `Int` | `@default(0)` |
+| `receivedAt` | `DateTime` | `@default(now()) @map("received_at") @db.Timestamptz(6)` |
+| `processedAt` | `DateTime?` | `@map("processed_at") @db.Timestamptz(6)` |
+| `retentionUntil` | `DateTime` | `@map("retention_until") @db.Timestamptz(6)` |
+| `errorMessage` | `String?` | `@map("error_message")` |
+| `createdAt` | `DateTime` | `@default(now()) @map("created_at") @db.Timestamptz(6)` |
+| `deletedAt` | `DateTime?` | `@map("deleted_at") @db.Timestamptz(6)` |
+| `integrationConnection` | `IntegrationConnection` | `@relation(fields: [integrationConnectionId], references: [id], onDelete: Restrict)` |
+
+**Model constraints/indexes:**
+
+- `@@unique([integrationConnectionId, providerEventId])`
+- `@@index([provider, providerEventId])`
+- `@@index([status, receivedAt])`
+- `@@index([retentionUntil])`
+- `@@map("webhook_receipts")`
+
+### AuditEvent
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `id` | `String` | `@id @default(uuid()) @db.Uuid` |
+| `actorSubject` | `String` | `@map("actor_subject") @db.VarChar(255)` |
+| `actorType` | `String` | `@map("actor_type") @db.VarChar(50)` |
+| `action` | `String` | `@db.VarChar(150)` |
+| `entityType` | `String` | `@map("entity_type") @db.VarChar(100)` |
+| `entityId` | `String` | `@map("entity_id") @db.Uuid` |
+| `correlationId` | `String` | `@map("correlation_id") @db.VarChar(128)` |
+| `changeSummary` | `Json?` | `@map("change_summary")` |
+| `ipHash` | `String?` | `@map("ip_hash") @db.VarChar(128)` |
+| `createdAt` | `DateTime` | `@default(now()) @map("created_at") @db.Timestamptz(6)` |
+| `archivedAt` | `DateTime?` | `@map("archived_at") @db.Timestamptz(6)` |
+
+**Model constraints/indexes:**
+
+- `@@index([entityType, entityId, createdAt(sort: Desc)])`
+- `@@index([correlationId])`
+- `@@index([actorSubject, createdAt(sort: Desc)])`
+- `@@map("audit_events")`
+
+### OutboxEvent
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `id` | `String` | `@id @default(uuid()) @db.Uuid` |
+| `aggregateType` | `String` | `@map("aggregate_type") @db.VarChar(100)` |
+| `aggregateId` | `String` | `@map("aggregate_id") @db.Uuid` |
+| `eventType` | `String` | `@map("event_type") @db.VarChar(255)` |
+| `payload` | `Json` | `` |
+| `correlationId` | `String` | `@map("correlation_id") @db.VarChar(128)` |
+| `occurredAt` | `DateTime` | `@map("occurred_at") @db.Timestamptz(6)` |
+| `status` | `OutboxStatus` | `@default(PENDING)` |
+| `idempotencyKey` | `String` | `@unique @map("idempotency_key") @db.VarChar(255)` |
+| `attempt` | `Int` | `@default(0)` |
+| `availableAt` | `DateTime` | `@default(now()) @map("available_at") @db.Timestamptz(6)` |
+| `lockedAt` | `DateTime?` | `@map("locked_at") @db.Timestamptz(6)` |
+| `publishedAt` | `DateTime?` | `@map("published_at") @db.Timestamptz(6)` |
+| `errorMessage` | `String?` | `@map("error_message")` |
+| `createdAt` | `DateTime` | `@default(now()) @map("created_at") @db.Timestamptz(6)` |
+| `updatedAt` | `DateTime` | `@updatedAt @map("updated_at") @db.Timestamptz(6)` |
+
+**Model constraints/indexes:**
+
+- `@@index([status, availableAt])`
+- `@@index([aggregateType, aggregateId])`
+- `@@map("outbox_events")`
+
+### IdempotencyRecord
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `id` | `String` | `@id @default(uuid()) @db.Uuid` |
+| `ownerSubject` | `String` | `@map("owner_subject") @db.VarChar(255)` |
+| `idempotencyKey` | `String` | `@map("idempotency_key") @db.VarChar(255)` |
+| `operation` | `String` | `@db.VarChar(150)` |
+| `requestFingerprint` | `String` | `@map("request_fingerprint") @db.Char(64)` |
+| `status` | `IdempotencyStatus` | `@default(PROCESSING)` |
+| `resourceType` | `String?` | `@map("resource_type") @db.VarChar(100)` |
+| `resourceId` | `String?` | `@map("resource_id") @db.Uuid` |
+| `responseStatus` | `Int?` | `@map("response_status")` |
+| `responseBody` | `Json?` | `@map("response_body")` |
+| `expiresAt` | `DateTime` | `@map("expires_at") @db.Timestamptz(6)` |
+| `createdAt` | `DateTime` | `@default(now()) @map("created_at") @db.Timestamptz(6)` |
+| `updatedAt` | `DateTime` | `@updatedAt @map("updated_at") @db.Timestamptz(6)` |
+
+**Model constraints/indexes:**
+
+- `@@unique([ownerSubject, idempotencyKey, operation])`
+- `@@index([status, expiresAt])`
+- `@@map("idempotency_records")`
+
+### ScheduledJob
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `id` | `String` | `@id @default(uuid()) @db.Uuid` |
+| `name` | `String` | `@db.VarChar(255)` |
+| `jobType` | `String` | `@map("job_type") @db.VarChar(150)` |
+| `entityType` | `String?` | `@map("entity_type") @db.VarChar(100)` |
+| `entityId` | `String?` | `@map("entity_id") @db.Uuid` |
+| `cronExpression` | `String?` | `@map("cron_expression") @db.VarChar(100)` |
+| `timezone` | `String` | `@default("UTC") @db.VarChar(100)` |
+| `runAt` | `DateTime?` | `@map("run_at") @db.Timestamptz(6)` |
+| `status` | `ScheduledJobStatus` | `@default(ACTIVE)` |
+| `payload` | `Json?` | `` |
+| `idempotencyKey` | `String?` | `@unique @map("idempotency_key") @db.VarChar(255)` |
+| `lastRunAt` | `DateTime?` | `@map("last_run_at") @db.Timestamptz(6)` |
+| `nextRunAt` | `DateTime?` | `@map("next_run_at") @db.Timestamptz(6)` |
+| `createdAt` | `DateTime` | `@default(now()) @map("created_at") @db.Timestamptz(6)` |
+| `updatedAt` | `DateTime` | `@updatedAt @map("updated_at") @db.Timestamptz(6)` |
+| `archivedAt` | `DateTime?` | `@map("archived_at") @db.Timestamptz(6)` |
+| `deletedAt` | `DateTime?` | `@map("deleted_at") @db.Timestamptz(6)` |
+
+**Model constraints/indexes:**
+
+- `@@index([status, nextRunAt])`
+- `@@index([entityType, entityId])`
+- `@@map("scheduled_jobs")`
+
+### FileMetadata
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `id` | `String` | `@id @default(uuid()) @db.Uuid` |
+| `clientId` | `String?` | `@map("client_id") @db.Uuid` |
+| `projectId` | `String?` | `@map("project_id") @db.Uuid` |
+| `purpose` | `FilePurpose` | `` |
+| `bucket` | `String` | `@db.VarChar(100)` |
+| `objectPath` | `String` | `@unique @map("object_path") @db.VarChar(1000)` |
+| `originalName` | `String` | `@map("original_name") @db.VarChar(500)` |
+| `contentType` | `String` | `@map("content_type") @db.VarChar(255)` |
+| `sizeBytes` | `BigInt` | `@map("size_bytes")` |
+| `checksumSha256` | `String` | `@map("checksum_sha256") @db.Char(64)` |
+| `ownerEntityType` | `String?` | `@map("owner_entity_type") @db.VarChar(100)` |
+| `ownerEntityId` | `String?` | `@map("owner_entity_id") @db.Uuid` |
+| `malwareScanStatus` | `MalwareScanStatus` | `@default(PENDING) @map("malware_scan_status")` |
+| `scannedAt` | `DateTime?` | `@map("scanned_at") @db.Timestamptz(6)` |
+| `storageVersion` | `String?` | `@map("storage_version") @db.VarChar(255)` |
+| `createdAt` | `DateTime` | `@default(now()) @map("created_at") @db.Timestamptz(6)` |
+| `updatedAt` | `DateTime` | `@updatedAt @map("updated_at") @db.Timestamptz(6)` |
+| `archivedAt` | `DateTime?` | `@map("archived_at") @db.Timestamptz(6)` |
+| `deletedAt` | `DateTime?` | `@map("deleted_at") @db.Timestamptz(6)` |
+| `client` | `Client?` | `@relation("ClientFiles", fields: [clientId], references: [id], onDelete: Cascade)` |
+| `logoForClient` | `Client?` | `@relation("ClientLogo")` |
+| `project` | `Project?` | `@relation(fields: [projectId], references: [id], onDelete: Cascade)` |
+| `chatbotSource` | `ChatbotSource?` | `` |
+| `proposalVersion` | `ProposalVersion?` | `` |
+| `expense` | `Expense?` | `` |
+| `reports` | `ReportArtifact[]` | `` |
+| `exports` | `ExportJob[]` | `` |
+
+**Model constraints/indexes:**
+
+- `@@index([clientId, purpose])`
+- `@@index([ownerEntityType, ownerEntityId])`
+- `@@index([malwareScanStatus])`
+- `@@map("file_metadata")`
+
+### ReportArtifact
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `id` | `String` | `@id @default(uuid()) @db.Uuid` |
+| `clientId` | `String?` | `@map("client_id") @db.Uuid` |
+| `fileId` | `String?` | `@map("file_id") @db.Uuid` |
+| `type` | `ReportType` | `` |
+| `status` | `ArtifactStatus` | `@default(PENDING)` |
+| `title` | `String` | `@db.VarChar(500)` |
+| `periodStart` | `DateTime?` | `@map("period_start") @db.Date` |
+| `periodEnd` | `DateTime?` | `@map("period_end") @db.Date` |
+| `methodology` | `String?` | `` |
+| `sourceIds` | `String[]` | `@default([]) @map("source_ids") @db.Uuid` |
+| `metadata` | `Json?` | `` |
+| `generatedAt` | `DateTime?` | `@map("generated_at") @db.Timestamptz(6)` |
+| `createdAt` | `DateTime` | `@default(now()) @map("created_at") @db.Timestamptz(6)` |
+| `updatedAt` | `DateTime` | `@updatedAt @map("updated_at") @db.Timestamptz(6)` |
+| `archivedAt` | `DateTime?` | `@map("archived_at") @db.Timestamptz(6)` |
+| `deletedAt` | `DateTime?` | `@map("deleted_at") @db.Timestamptz(6)` |
+| `client` | `Client?` | `@relation(fields: [clientId], references: [id], onDelete: Cascade)` |
+| `file` | `FileMetadata?` | `@relation(fields: [fileId], references: [id], onDelete: SetNull)` |
+
+**Model constraints/indexes:**
+
+- `@@index([type, status, createdAt(sort: Desc)])`
+- `@@index([clientId])`
+- `@@map("report_artifacts")`
+
+### ExportJob
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `id` | `String` | `@id @default(uuid()) @db.Uuid` |
+| `fileId` | `String?` | `@map("file_id") @db.Uuid` |
+| `format` | `ExportFormat` | `` |
+| `status` | `ArtifactStatus` | `@default(PENDING)` |
+| `requestedBy` | `String` | `@map("requested_by") @db.VarChar(255)` |
+| `scope` | `Json` | `` |
+| `manifest` | `Json?` | `` |
+| `recordCount` | `Int?` | `@map("record_count")` |
+| `checksumSha256` | `String?` | `@map("checksum_sha256") @db.Char(64)` |
+| `expiresAt` | `DateTime?` | `@map("expires_at") @db.Timestamptz(6)` |
+| `completedAt` | `DateTime?` | `@map("completed_at") @db.Timestamptz(6)` |
+| `createdAt` | `DateTime` | `@default(now()) @map("created_at") @db.Timestamptz(6)` |
+| `updatedAt` | `DateTime` | `@updatedAt @map("updated_at") @db.Timestamptz(6)` |
+| `archivedAt` | `DateTime?` | `@map("archived_at") @db.Timestamptz(6)` |
+| `deletedAt` | `DateTime?` | `@map("deleted_at") @db.Timestamptz(6)` |
+| `file` | `FileMetadata?` | `@relation(fields: [fileId], references: [id], onDelete: SetNull)` |
+
+**Model constraints/indexes:**
+
+- `@@index([status, createdAt])`
+- `@@map("export_jobs")`
+
+### DeletionRequest
+
+| Field | Type | Constraints / mapping |
+|---|---|---|
+| `id` | `String` | `@id @default(uuid()) @db.Uuid` |
+| `entityType` | `String` | `@map("entity_type") @db.VarChar(100)` |
+| `entityId` | `String` | `@map("entity_id") @db.Uuid` |
+| `status` | `DeletionStatus` | `@default(PENDING)` |
+| `requestedBy` | `String` | `@map("requested_by") @db.VarChar(255)` |
+| `requestedAt` | `DateTime` | `@default(now()) @map("requested_at") @db.Timestamptz(6)` |
+| `executeAfter` | `DateTime` | `@map("execute_after") @db.Timestamptz(6)` |
+| `cancelledAt` | `DateTime?` | `@map("cancelled_at") @db.Timestamptz(6)` |
+| `completedAt` | `DateTime?` | `@map("completed_at") @db.Timestamptz(6)` |
+| `recoveryUntil` | `DateTime` | `@map("recovery_until") @db.Timestamptz(6)` |
+| `impactManifest` | `Json` | `@map("impact_manifest")` |
+| `impactRegistryVersion` | `Int` | `@default(1) @map("impact_registry_version")` |
+| `legalHold` | `Boolean` | `@default(false) @map("legal_hold")` |
+| `confirmedAt` | `DateTime?` | `@map("confirmed_at") @db.Timestamptz(6)` |
+| `errorMessage` | `String?` | `@map("error_message")` |
+| `createdAt` | `DateTime` | `@default(now()) @map("created_at") @db.Timestamptz(6)` |
+| `updatedAt` | `DateTime` | `@updatedAt @map("updated_at") @db.Timestamptz(6)` |
+
+**Model constraints/indexes:**
+
+- `@@index([entityType, entityId, status])`
+- `@@index([status, executeAfter])`
+- `@@index([recoveryUntil])`
+- `@@map("deletion_requests")`
+
+## Enums
+
+### ClientStatus
+
+`PROSPECT   @map("prospect")`, `ONBOARDING @map("onboarding")`, `ACTIVE     @map("active")`, `PAUSED     @map("paused")`, `CHURNED    @map("churned")`
+
+### ProjectType
+
+`CHATBOT  @map("chatbot")`, `WORKFLOW @map("workflow")`, `CONTENT  @map("content")`, `LEAD_GEN @map("lead_gen")`, `CUSTOM   @map("custom")`
+
+### ProjectStatus
+
+`PLANNING    @map("planning")`, `IN_PROGRESS @map("in_progress")`, `REVIEW      @map("review")`, `DELIVERED   @map("delivered")`, `REVISION    @map("revision")`, `COMPLETE    @map("complete")`
+
+### TaskStatus
+
+`BACKLOG     @map("backlog")`, `TODO        @map("todo")`, `IN_PROGRESS @map("in_progress")`, `BLOCKED     @map("blocked")`, `REVIEW      @map("review")`, `DONE        @map("done")`, `CANCELLED   @map("cancelled")`
+
+### TaskPriority
+
+`LOW      @map("low")`, `MEDIUM   @map("medium")`, `HIGH     @map("high")`, `CRITICAL @map("critical")`
+
+### AssignmentType
+
+`AGENT @map("agent")`, `HUMAN @map("human")`
+
+### TimeEntrySource
+
+`MANUAL    @map("manual")`, `AGENT_RUN @map("agent_run")`
+
+### CommunicationType
+
+`EMAIL         @map("email")`, `NOTE          @map("note")`, `CALL_SUMMARY  @map("call_summary")`, `SLACK_MESSAGE @map("slack_message")`, `SOCIAL_DM     @map("social_dm")`, `CHATBOT       @map("chatbot")`
+
+### CommunicationDirection
+
+`INBOUND  @map("inbound")`, `OUTBOUND @map("outbound")`, `INTERNAL @map("internal")`
+
+### AgentType
+
+`CHATBOT_BUILDER   @map("chatbot_builder")`, `WORKFLOW_DESIGNER @map("workflow_designer")`, `CONTENT_WRITER    @map("content_writer")`, `LEAD_GENERATOR    @map("lead_generator")`, `INVOICE_CHASER    @map("invoice_chaser")`, `CRM_MANAGER       @map("crm_manager")`, `REPORTER          @map("reporter")`, `ANALYST           @map("analyst")`, `CUSTOM            @map("custom")`
+
+### AgentStatus
+
+`IDLE      @map("idle")`, `RUNNING   @map("running")`, `ERROR     @map("error")`, `PAUSED    @map("paused")`, `SCHEDULED @map("scheduled")`
+
+### AgentRunStatus
+
+`QUEUED    @map("queued")`, `RUNNING   @map("running")`, `SUCCESS   @map("success")`, `FAILED    @map("failed")`, `TIMEOUT   @map("timeout")`, `CANCELLED @map("cancelled")`
+
+### AgentTriggerType
+
+`MANUAL    @map("manual")`, `SCHEDULED @map("scheduled")`, `EVENT     @map("event")`, `CHAIN     @map("chain")`, `WEBHOOK   @map("webhook")`
+
+### MemoryKind
+
+`KEY_VALUE @map("key_value")`, `VECTOR    @map("vector")`, `SUMMARY   @map("summary")`
+
+### ApprovalStatus
+
+`PENDING  @map("pending")`, `APPROVED @map("approved")`, `REJECTED @map("rejected")`, `EXPIRED  @map("expired")`, `REVOKED  @map("revoked")`
+
+### ApprovalAction
+
+`AGENT_TOOL_USE      @map("agent_tool_use")`, `OUTREACH_SEND       @map("outreach_send")`, `WORKFLOW_DEPLOY     @map("workflow_deploy")`, `CONTENT_PUBLISH     @map("content_publish")`, `INVOICE_SEND        @map("invoice_send")`, `PROPOSAL_SEND       @map("proposal_send")`, `KNOWLEDGE_PROMOTION @map("knowledge_promotion")`, `OTHER               @map("other")`
+
+### ChatbotPlatform
+
+`WEBSITE_WIDGET @map("website_widget")`, `WHATSAPP       @map("whatsapp")`, `INSTAGRAM_DM   @map("instagram_dm")`, `CUSTOM_API     @map("custom_api")`
+
+### ChatbotStatus
+
+`DRAFT    @map("draft")`, `REVIEW   @map("review")`, `ACTIVE   @map("active")`, `PAUSED   @map("paused")`, `ARCHIVED @map("archived")`
+
+### ChatbotSourceType
+
+`FILE      @map("file")`, `URL       @map("url")`, `FAQ       @map("faq")`, `PRODUCT   @map("product")`, `KNOWLEDGE @map("knowledge")`
+
+### IngestionStatus
+
+`PENDING    @map("pending")`, `SCANNING   @map("scanning")`, `PROCESSING @map("processing")`, `READY      @map("ready")`, `REJECTED   @map("rejected")`, `FAILED     @map("failed")`
+
+### ConversationStatus
+
+`OPEN           @map("open")`, `BOT_ACTIVE     @map("bot_active")`, `HUMAN_TAKEOVER @map("human_takeover")`, `ESCALATED      @map("escalated")`, `RESOLVED       @map("resolved")`, `CLOSED         @map("closed")`
+
+### MessageRole
+
+`SYSTEM    @map("system")`, `USER      @map("user")`, `ASSISTANT @map("assistant")`, `OWNER     @map("owner")`, `TOOL      @map("tool")`
+
+### WorkflowProvider
+
+`N8N  @map("n8n")`, `MAKE @map("make")`
+
+### WorkflowStatus
+
+`DRAFT     @map("draft")`, `VALIDATED @map("validated")`, `TESTED    @map("tested")`, `DEPLOYED  @map("deployed")`, `PAUSED    @map("paused")`, `ERROR     @map("error")`, `ARCHIVED  @map("archived")`
+
+### WorkflowExecutionStatus
+
+`QUEUED    @map("queued")`, `RUNNING   @map("running")`, `SUCCESS   @map("success")`, `FAILED    @map("failed")`, `CANCELLED @map("cancelled")`
+
+### ContentScope
+
+`CLIENT @map("client")`, `AGENCY @map("agency")`
+
+### ContentType
+
+`LINKEDIN_POST @map("linkedin_post")`, `X_POST        @map("x_post")`, `X_THREAD      @map("x_thread")`, `INSTAGRAM     @map("instagram")`, `NEWSLETTER    @map("newsletter")`, `BLOG          @map("blog")`, `VIDEO_SCRIPT  @map("video_script")`, `CASE_STUDY    @map("case_study")`, `OTHER         @map("other")`
+
+### ContentStatus
+
+`DRAFT         @map("draft")`, `OWNER_REVIEW  @map("owner_review")`, `CLIENT_REVIEW @map("client_review")`, `REVIEW        @map("review")`, `APPROVED      @map("approved")`, `SCHEDULED     @map("scheduled")`, `PUBLISHED     @map("published")`, `FAILED        @map("failed")`, `ARCHIVED      @map("archived")`
+
+### PublishStatus
+
+`QUEUED     @map("queued")`, `PUBLISHING @map("publishing")`, `PUBLISHED  @map("published")`, `FAILED     @map("failed")`, `CANCELLED  @map("cancelled")`
+
+### LeadScope
+
+`CLIENT @map("client")`, `AGENCY @map("agency")`
+
+### SourcedLeadCategory
+
+`HOT  @map("hot")`, `WARM @map("warm")`, `COLD @map("cold")`
+
+### SourcedLeadStage
+
+`SOURCED        @map("sourced")`, `QUALIFIED      @map("qualified")`, `OUTREACH_SENT  @map("outreach_sent")`, `REPLIED        @map("replied")`, `MEETING_BOOKED @map("meeting_booked")`, `CONVERTED      @map("converted")`, `DISQUALIFIED   @map("disqualified")`
+
+### OutreachStatus
+
+`DRAFT            @map("draft")`, `PENDING_APPROVAL @map("pending_approval")`, `APPROVED         @map("approved")`, `SCHEDULED        @map("scheduled")`, `SENT             @map("sent")`, `DELIVERED        @map("delivered")`, `OPENED           @map("opened")`, `REPLIED          @map("replied")`, `BOUNCED          @map("bounced")`, `CANCELLED        @map("cancelled")`, `FAILED           @map("failed")`
+
+### CrmLeadStage
+
+`NEW         @map("new")`, `CONTACTED   @map("contacted")`, `QUALIFIED   @map("qualified")`, `PROPOSAL    @map("proposal")`, `NEGOTIATING @map("negotiating")`, `WON         @map("won")`, `LOST        @map("lost")`
+
+### ProposalStatus
+
+`DRAFT    @map("draft")`, `SENT     @map("sent")`, `VIEWED   @map("viewed")`, `ACCEPTED @map("accepted")`, `REJECTED @map("rejected")`, `EXPIRED  @map("expired")`
+
+### InvoiceType
+
+`ONE_TIME  @map("one_time")`, `RECURRING @map("recurring")`, `USAGE     @map("usage")`
+
+### InvoiceStatus
+
+`DRAFT     @map("draft")`, `SENT      @map("sent")`, `PAID      @map("paid")`, `OVERDUE   @map("overdue")`, `CANCELLED @map("cancelled")`
+
+### PaymentStatus
+
+`PENDING   @map("pending")`, `SUCCEEDED @map("succeeded")`, `FAILED    @map("failed")`, `REFUNDED  @map("refunded")`, `DISPUTED  @map("disputed")`
+
+### ExpenseCategory
+
+`API_COST          @map("api_cost")`, `TOOL_SUBSCRIPTION @map("tool_subscription")`, `HOSTING           @map("hosting")`, `DOMAIN            @map("domain")`, `CONTRACTOR        @map("contractor")`, `OTHER             @map("other")`
+
+### LedgerEntryType
+
+`REVENUE @map("revenue")`, `EXPENSE @map("expense")`, `CREDIT  @map("credit")`, `REFUND  @map("refund")`
+
+### KnowledgeCategory
+
+`SOP          @map("sop")`, `TEMPLATE     @map("template")`, `BRAND_VOICE  @map("brand_voice")`, `CLIENT_DATA  @map("client_data")`, `RESEARCH     @map("research")`, `LESSON       @map("lesson")`, `DECISION     @map("decision")`, `MEETING_NOTE @map("meeting_note")`, `OTHER        @map("other")`
+
+### KnowledgeLinkType
+
+`CLIENT    @map("client")`, `AGENT     @map("agent")`, `PROJECT   @map("project")`, `SOP       @map("sop")`, `DECISION  @map("decision")`, `KNOWLEDGE @map("knowledge")`
+
+### SopExecutionStatus
+
+`RUNNING   @map("running")`, `SUCCESS   @map("success")`, `FAILED    @map("failed")`, `CANCELLED @map("cancelled")`
+
+### GraphNodeType
+
+`CLIENT    @map("client")`, `AGENT     @map("agent")`, `TOOL      @map("tool")`, `SOP       @map("sop")`, `HUMAN     @map("human")`, `TASK      @map("task")`, `DECISION  @map("decision")`, `KNOWLEDGE @map("knowledge")`, `FINANCE   @map("finance")`, `HUB       @map("hub")`
+
+### GraphEdgeType
+
+`OWNERSHIP  @map("ownership")`, `ASSIGNMENT @map("assignment")`, `DATA_FLOW  @map("data_flow")`, `DEPENDENCY @map("dependency")`, `TRIGGER    @map("trigger")`, `REFERENCE  @map("reference")`, `FINANCIAL  @map("financial")`
+
+### NotificationType
+
+`AGENT_ERROR          @map("agent_error")`, `INVOICE_OVERDUE      @map("invoice_overdue")`, `NEW_LEAD             @map("new_lead")`, `CLIENT_REPLY         @map("client_reply")`, `TASK_DUE             @map("task_due")`, `TASK_OVERDUE         @map("task_overdue")`, `COST_ALERT           @map("cost_alert")`, `REPORT_READY         @map("report_ready")`, `RENEWAL_DUE          @map("renewal_due")`, `CONTENT_PUBLISH      @map("content_publish")`, `KNOWLEDGE_SUGGESTION @map("knowledge_suggestion")`
+
+### NotificationPriority
+
+`CRITICAL @map("critical")`, `HIGH     @map("high")`, `MEDIUM   @map("medium")`, `LOW      @map("low")`
+
+### NotificationChannel
+
+`EMAIL  @map("email")`, `IN_APP @map("in_app")`, `SLACK  @map("slack")`
+
+### DeliveryStatus
+
+`PENDING   @map("pending")`, `DEFERRED  @map("deferred")`, `SENDING   @map("sending")`, `DELIVERED @map("delivered")`, `FAILED    @map("failed")`, `SKIPPED   @map("skipped")`
+
+### IntegrationProvider
+
+`OPENAI       @map("openai")`, `ANTHROPIC    @map("anthropic")`, `N8N          @map("n8n")`, `MAKE         @map("make")`, `STRIPE       @map("stripe")`, `GMAIL        @map("gmail")`, `GOOGLE       @map("google")`, `SLACK        @map("slack")`, `LINKEDIN     @map("linkedin")`, `X            @map("x")`, `WORDPRESS    @map("wordpress")`, `MAILCHIMP    @map("mailchimp")`, `SENDGRID     @map("sendgrid")`, `RESEND       @map("resend")`, `SMTP         @map("smtp")`, `TWILIO       @map("twilio")`, `INSTAGRAM    @map("instagram")`, `CALENDLY     @map("calendly")`, `CAL_COM      @map("cal_com")`, `NOTION       @map("notion")`, `GITHUB       @map("github")`, `APOLLO       @map("apollo")`, `CRUNCHBASE   @map("crunchbase")`, `GOOGLE_MAPS  @map("google_maps")`, `STORAGE      @map("storage")`, `MALWARE_SCAN @map("malware_scan")`, `OTHER        @map("other")`
+
+### IntegrationStatus
+
+`NOT_CONFIGURED @map("not_configured")`, `CONNECTED      @map("connected")`, `DEGRADED       @map("degraded")`, `REVOKED        @map("revoked")`, `ERROR          @map("error")`, `DISABLED       @map("disabled")`
+
+### IntegrationSyncStatus
+
+`IDLE         @map("idle")`, `RUNNING      @map("running")`, `RATE_LIMITED @map("rate_limited")`, `ERROR        @map("error")`, `REVOKED      @map("revoked")`
+
+### IdempotencyStatus
+
+`PROCESSING @map("processing")`, `COMPLETED  @map("completed")`, `FAILED     @map("failed")`
+
+### WebhookStatus
+
+`RECEIVED    @map("received")`, `PROCESSING  @map("processing")`, `PROCESSED   @map("processed")`, `FAILED      @map("failed")`, `DEAD_LETTER @map("dead_letter")`, `IGNORED     @map("ignored")`
+
+### OutboxStatus
+
+`PENDING     @map("pending")`, `PROCESSING  @map("processing")`, `PUBLISHED   @map("published")`, `FAILED      @map("failed")`, `DEAD_LETTER @map("dead_letter")`
+
+### ScheduledJobStatus
+
+`ACTIVE    @map("active")`, `PAUSED    @map("paused")`, `RUNNING   @map("running")`, `COMPLETED @map("completed")`, `FAILED    @map("failed")`, `CANCELLED @map("cancelled")`
+
+### FilePurpose
+
+`CLIENT_FILE    @map("client_file")`, `LOGO           @map("logo")`, `RECEIPT        @map("receipt")`, `TEMPLATE       @map("template")`, `MEDIA          @map("media")`, `CHATBOT_SOURCE @map("chatbot_source")`, `EXPORT         @map("export")`, `REPORT         @map("report")`, `PROPOSAL       @map("proposal")`, `OTHER          @map("other")`
+
+### MalwareScanStatus
+
+`PENDING  @map("pending")`, `CLEAN    @map("clean")`, `INFECTED @map("infected")`, `FAILED   @map("failed")`, `SKIPPED  @map("skipped")`
+
+### ReportType
+
+`WEEKLY_SUMMARY       @map("weekly_summary")`, `MONTHLY_REVIEW       @map("monthly_review")`, `CLIENT               @map("client")`, `CHATBOT_WEEKLY       @map("chatbot_weekly")`, `WORKFLOW_IMPACT      @map("workflow_impact")`, `CONTENT_PERFORMANCE  @map("content_performance")`, `CONTENT_ROI          @map("content_roi")`, `LEAD_WEEKLY          @map("lead_weekly")`, `PROFIT_AND_LOSS      @map("profit_and_loss")`, `CLIENT_PROFITABILITY @map("client_profitability")`, `OTHER                @map("other")`
+
+### ArtifactStatus
+
+`PENDING    @map("pending")`, `GENERATING @map("generating")`, `READY      @map("ready")`, `FAILED     @map("failed")`, `EXPIRED    @map("expired")`
+
+### ExportFormat
+
+`JSON @map("json")`, `CSV  @map("csv")`, `ZIP  @map("zip")`
+
+### DeletionStatus
+
+`PENDING   @map("pending")`, `CANCELLED @map("cancelled")`, `EXECUTING @map("executing")`, `COMPLETED @map("completed")`, `FAILED    @map("failed")`, `RECOVERED @map("recovered")`

@@ -1,0 +1,55 @@
+name: Deployment scaffold
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Target environment
+        required: true
+        type: choice
+        options: [preview, production]
+
+permissions:
+  contents: read
+
+env:
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - name: Apply reviewed migrations using the environment direct connection
+        env:
+          DIRECT_URL: ${{ secrets.DIRECT_URL }}
+        run: |
+          test -n "$DIRECT_URL" || { echo "DIRECT_URL is not configured"; exit 1; }
+          npm run db:migrate:deploy
+          npm run db:status
+
+  deploy:
+    needs: migrate
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run check
+      - name: Deploy only when Vercel credentials are configured
+        run: |
+          test -n "${{ secrets.VERCEL_TOKEN }}" || { echo "VERCEL_TOKEN is not configured"; exit 1; }
+          npx vercel@latest pull --yes --environment=${{ inputs.environment }} --token=${{ secrets.VERCEL_TOKEN }}
+          npx vercel@latest build ${{ inputs.environment == 'production' && '--prod' || '' }} --token=${{ secrets.VERCEL_TOKEN }}
+          npx vercel@latest deploy --prebuilt ${{ inputs.environment == 'production' && '--prod' || '' }} --token=${{ secrets.VERCEL_TOKEN }}

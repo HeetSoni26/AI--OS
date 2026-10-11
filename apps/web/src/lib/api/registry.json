@@ -1,0 +1,753 @@
+[
+  {
+    "filesystem": "/api/auth/logout",
+    "path": "/api/auth/logout",
+    "methods": [
+      "POST"
+    ]
+  },
+  {
+    "filesystem": "/api/health",
+    "path": "/api/health",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "filesystem": "/api/openapi",
+    "path": "/api/openapi",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/agents",
+    "path": "/api/v1/agents",
+    "methods": [
+      "GET",
+      "POST",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/agents/approvals",
+    "path": "/api/v1/agents/approvals",
+    "methods": [
+      "GET",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/agents/approvals/[approvalId]",
+    "path": "/api/v1/agents/approvals/{approvalId}",
+    "methods": [
+      "POST",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/agents/runs",
+    "path": "/api/v1/agents/runs",
+    "methods": [
+      "GET",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/agents/runtime",
+    "path": "/api/v1/agents/runtime",
+    "methods": [
+      "GET",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/agents/[agentId]",
+    "path": "/api/v1/agents/{agentId}",
+    "methods": [
+      "GET",
+      "PATCH",
+      "DELETE",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/agents/[agentId]/budget",
+    "path": "/api/v1/agents/{agentId}/budget",
+    "methods": [
+      "GET",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/agents/[agentId]/config-versions",
+    "path": "/api/v1/agents/{agentId}/config-versions",
+    "methods": [
+      "GET",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/agents/[agentId]/memory",
+    "path": "/api/v1/agents/{agentId}/memory",
+    "methods": [
+      "GET",
+      "POST",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/agents/[agentId]/memory/[memoryId]",
+    "path": "/api/v1/agents/{agentId}/memory/{memoryId}",
+    "methods": [
+      "PATCH",
+      "DELETE",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/agents/[agentId]/pause",
+    "path": "/api/v1/agents/{agentId}/pause",
+    "methods": [
+      "POST",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/agents/[agentId]/resume",
+    "path": "/api/v1/agents/{agentId}/resume",
+    "methods": [
+      "POST",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/agents/[agentId]/run",
+    "path": "/api/v1/agents/{agentId}/run",
+    "methods": [
+      "POST",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/agents/[agentId]/runs",
+    "path": "/api/v1/agents/{agentId}/runs",
+    "methods": [
+      "GET",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/chatbots",
+    "path": "/api/v1/chatbots",
+    "methods": [
+      "GET",
+      "POST",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/chatbots/conversations",
+    "path": "/api/v1/chatbots/conversations",
+    "methods": [
+      "GET",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/chatbots/conversations/[conversationId]",
+    "path": "/api/v1/chatbots/conversations/{conversationId}",
+    "methods": [
+      "GET",
+      "POST",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/chatbots/[chatbotId]",
+    "path": "/api/v1/chatbots/{chatbotId}",
+    "methods": [
+      "GET",
+      "PATCH",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/chatbots/[chatbotId]/chat",
+    "path": "/api/v1/chatbots/{chatbotId}/chat",
+    "methods": [
+      "POST",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/chatbots/[chatbotId]/sources",
+    "path": "/api/v1/chatbots/{chatbotId}/sources",
+    "methods": [
+      "POST",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/chatbots/[chatbotId]/sources/[sourceId]/approve",
+    "path": "/api/v1/chatbots/{chatbotId}/sources/{sourceId}/approve",
+    "methods": [
+      "POST",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/chatbots/[chatbotId]/status",
+    "path": "/api/v1/chatbots/{chatbotId}/status",
+    "methods": [
+      "POST",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/clients",
+    "path": "/api/v1/clients",
+    "methods": [
+      "GET",
+      "POST",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/clients/[clientId]",
+    "path": "/api/v1/clients/{clientId}",
+    "methods": [
+      "GET",
+      "PATCH",
+      "DELETE",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/clients/[clientId]/communications",
+    "path": "/api/v1/clients/{clientId}/communications",
+    "methods": [
+      "GET",
+      "POST",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/clients/[clientId]/contacts",
+    "path": "/api/v1/clients/{clientId}/contacts",
+    "methods": [
+      "GET",
+      "POST",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/clients/[clientId]/contacts/[contactId]",
+    "path": "/api/v1/clients/{clientId}/contacts/{contactId}",
+    "methods": [
+      "GET",
+      "PATCH",
+      "DELETE",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/clients/[clientId]/deletion",
+    "path": "/api/v1/clients/{clientId}/deletion",
+    "methods": [
+      "GET",
+      "POST",
+      "DELETE",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/clients/[clientId]/invoices",
+    "path": "/api/v1/clients/{clientId}/invoices",
+    "methods": [
+      "GET",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/clients/[clientId]/logo",
+    "path": "/api/v1/clients/{clientId}/logo",
+    "methods": [
+      "GET",
+      "POST",
+      "DELETE",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/clients/[clientId]/projects",
+    "path": "/api/v1/clients/{clientId}/projects",
+    "methods": [
+      "GET",
+      "POST",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/clients/[clientId]/projects/[projectId]",
+    "path": "/api/v1/clients/{clientId}/projects/{projectId}",
+    "methods": [
+      "GET",
+      "PATCH",
+      "DELETE",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/clients/[clientId]/projects/[projectId]/assignments",
+    "path": "/api/v1/clients/{clientId}/projects/{projectId}/assignments",
+    "methods": [
+      "GET",
+      "POST",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/clients/[clientId]/projects/[projectId]/assignments/[assignmentId]",
+    "path": "/api/v1/clients/{clientId}/projects/{projectId}/assignments/{assignmentId}",
+    "methods": [
+      "GET",
+      "PATCH",
+      "DELETE",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/clients/[clientId]/projects/[projectId]/deliverables",
+    "path": "/api/v1/clients/{clientId}/projects/{projectId}/deliverables",
+    "methods": [
+      "GET",
+      "POST",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/clients/[clientId]/projects/[projectId]/deliverables/reorder",
+    "path": "/api/v1/clients/{clientId}/projects/{projectId}/deliverables/reorder",
+    "methods": [
+      "PATCH",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/clients/[clientId]/projects/[projectId]/deliverables/[deliverableId]",
+    "path": "/api/v1/clients/{clientId}/projects/{projectId}/deliverables/{deliverableId}",
+    "methods": [
+      "GET",
+      "PATCH",
+      "DELETE",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/clients/[clientId]/projects/[projectId]/delivery-gate",
+    "path": "/api/v1/clients/{clientId}/projects/{projectId}/delivery-gate",
+    "methods": [
+      "GET",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/clients/[clientId]/projects/[projectId]/status",
+    "path": "/api/v1/clients/{clientId}/projects/{projectId}/status",
+    "methods": [
+      "GET",
+      "PATCH",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/clients/[clientId]/projects/[projectId]/tasks",
+    "path": "/api/v1/clients/{clientId}/projects/{projectId}/tasks",
+    "methods": [
+      "GET",
+      "POST",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/clients/[clientId]/projects/[projectId]/tasks/[taskId]",
+    "path": "/api/v1/clients/{clientId}/projects/{projectId}/tasks/{taskId}",
+    "methods": [
+      "GET",
+      "PATCH",
+      "DELETE",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/clients/[clientId]/projects/[projectId]/time",
+    "path": "/api/v1/clients/{clientId}/projects/{projectId}/time",
+    "methods": [
+      "GET",
+      "POST",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/clients/[clientId]/projects/[projectId]/time/[timeEntryId]",
+    "path": "/api/v1/clients/{clientId}/projects/{projectId}/time/{timeEntryId}",
+    "methods": [
+      "GET",
+      "PATCH",
+      "DELETE",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/clients/[clientId]/recover",
+    "path": "/api/v1/clients/{clientId}/recover",
+    "methods": [
+      "POST",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/content",
+    "path": "/api/v1/content",
+    "methods": [
+      "GET",
+      "POST",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/content/brand",
+    "path": "/api/v1/content/brand",
+    "methods": [
+      "GET",
+      "POST",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/content/calendar",
+    "path": "/api/v1/content/calendar",
+    "methods": [
+      "GET",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/content/[artifactId]",
+    "path": "/api/v1/content/{artifactId}",
+    "methods": [
+      "GET",
+      "PATCH",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/content/[artifactId]/calendar",
+    "path": "/api/v1/content/{artifactId}/calendar",
+    "methods": [
+      "POST",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/content/[artifactId]/status",
+    "path": "/api/v1/content/{artifactId}/status",
+    "methods": [
+      "POST",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/finance/dashboard",
+    "path": "/api/v1/finance/dashboard",
+    "methods": [
+      "GET",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/finance/expenses",
+    "path": "/api/v1/finance/expenses",
+    "methods": [
+      "GET",
+      "POST",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/finance/invoices",
+    "path": "/api/v1/finance/invoices",
+    "methods": [
+      "GET",
+      "POST",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/finance/invoices/[invoiceId]",
+    "path": "/api/v1/finance/invoices/{invoiceId}",
+    "methods": [
+      "POST",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/graph",
+    "path": "/api/v1/graph",
+    "methods": [
+      "GET",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/graph/directory",
+    "path": "/api/v1/graph/directory",
+    "methods": [
+      "GET",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/graph/edges",
+    "path": "/api/v1/graph/edges",
+    "methods": [
+      "GET",
+      "POST",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/graph/edges/[edgeId]",
+    "path": "/api/v1/graph/edges/{edgeId}",
+    "methods": [
+      "DELETE",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/graph/nodes",
+    "path": "/api/v1/graph/nodes",
+    "methods": [
+      "GET",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/graph/nodes/[nodeId]",
+    "path": "/api/v1/graph/nodes/{nodeId}",
+    "methods": [
+      "GET",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/graph/search",
+    "path": "/api/v1/graph/search",
+    "methods": [
+      "GET",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/health",
+    "path": "/api/v1/health",
+    "methods": [
+      "GET",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/integrations/gmail",
+    "path": "/api/v1/integrations/gmail",
+    "methods": [
+      "GET",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/integrations/gmail/callback",
+    "path": "/api/v1/integrations/gmail/callback",
+    "methods": [
+      "GET"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/integrations/gmail/connect",
+    "path": "/api/v1/integrations/gmail/connect",
+    "methods": [
+      "POST",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/integrations/gmail/sync",
+    "path": "/api/v1/integrations/gmail/sync",
+    "methods": [
+      "POST",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/knowledge",
+    "path": "/api/v1/knowledge",
+    "methods": [
+      "GET",
+      "POST",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/knowledge/notifications",
+    "path": "/api/v1/knowledge/notifications",
+    "methods": [
+      "GET",
+      "POST",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/knowledge/notifications/[notificationId]/read",
+    "path": "/api/v1/knowledge/notifications/{notificationId}/read",
+    "methods": [
+      "POST",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/knowledge/sops",
+    "path": "/api/v1/knowledge/sops",
+    "methods": [
+      "GET",
+      "POST",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/knowledge/sops/[sopId]/executions",
+    "path": "/api/v1/knowledge/sops/{sopId}/executions",
+    "methods": [
+      "POST",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/knowledge/[entryId]",
+    "path": "/api/v1/knowledge/{entryId}",
+    "methods": [
+      "GET",
+      "PATCH",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/pipeline/leads",
+    "path": "/api/v1/pipeline/leads",
+    "methods": [
+      "GET",
+      "POST",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/pipeline/leads/[leadId]",
+    "path": "/api/v1/pipeline/leads/{leadId}",
+    "methods": [
+      "GET",
+      "PATCH",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/pipeline/leads/[leadId]/stage",
+    "path": "/api/v1/pipeline/leads/{leadId}/stage",
+    "methods": [
+      "POST",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/pipeline/proposals",
+    "path": "/api/v1/pipeline/proposals",
+    "methods": [
+      "GET",
+      "POST",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/pipeline/proposals/[proposalId]/status",
+    "path": "/api/v1/pipeline/proposals/{proposalId}/status",
+    "methods": [
+      "POST",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/pipeline/sourced-leads",
+    "path": "/api/v1/pipeline/sourced-leads",
+    "methods": [
+      "GET",
+      "POST",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/settings",
+    "path": "/api/v1/settings",
+    "methods": [
+      "GET",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/webhooks/n8n",
+    "path": "/api/v1/webhooks/n8n",
+    "methods": [
+      "GET",
+      "POST"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/workflows",
+    "path": "/api/v1/workflows",
+    "methods": [
+      "GET",
+      "POST",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/workflows/executions",
+    "path": "/api/v1/workflows/executions",
+    "methods": [
+      "GET",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/workflows/[workflowId]",
+    "path": "/api/v1/workflows/{workflowId}",
+    "methods": [
+      "GET",
+      "PATCH",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/workflows/[workflowId]/status",
+    "path": "/api/v1/workflows/{workflowId}/status",
+    "methods": [
+      "POST",
+      "OPTIONS"
+    ]
+  },
+  {
+    "filesystem": "/api/v1/workflows/[workflowId]/test",
+    "path": "/api/v1/workflows/{workflowId}/test",
+    "methods": [
+      "POST",
+      "OPTIONS"
+    ]
+  }
+]

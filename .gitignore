@@ -1,0 +1,46 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.*
+
+# Next.js and build output
+.next/
+out/
+build/
+dist/
+coverage/
+packages/data/src/generated/
+playwright-report/
+test-results/
+blob-report/
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Editors and operating systems
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# QA screenshots (local artifacts; curated shots live in docs/screenshots)
+gui-test-screenshots/
+
+# Logs and local caches
+*.log
+npm-debug.log*
+*.tsbuildinfo
+.vercel/
+
+# Documentation builder dependencies
+/tools/.docx-build/node_modules/
+
+# Python
+__pycache__/
+*.py[cod]

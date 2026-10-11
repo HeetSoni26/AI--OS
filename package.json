@@ -1,0 +1,43 @@
+{
+  "name": "ai-automation-agency-os",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Personal AI-powered command center for operating an AI automation agency.",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "devDependencies": {
+    "tsx": "4.20.3"
+  },
+  "scripts": {
+    "dev": "npm run dev --workspace @aios/web",
+    "build": "npm run build --workspace @aios/web",
+    "start": "npm run start --workspace @aios/web",
+    "lint": "npm run lint --workspace @aios/web",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "test:coverage": "npm run test:coverage --workspace @aios/web && npm run test:coverage --workspace @aios/platform",
+    "test:e2e": "npm run test:e2e --workspace @aios/web",
+    "test:integration": "npm run test:integration --workspace @aios/data",
+    "db:format": "npm run db:format --workspace @aios/data",
+    "db:validate": "npm run db:validate --workspace @aios/data",
+    "db:generate": "npm run db:generate --workspace @aios/data",
+    "db:migrate:dev": "npm run db:migrate:dev --workspace @aios/data",
+    "db:migrate:deploy": "npm run db:migrate:deploy --workspace @aios/data",
+    "db:status": "npm run db:status --workspace @aios/data",
+    "db:seed": "npm run db:seed --workspace @aios/data",
+    "db:seed:demo": "tsx packages/data/prisma/seed-demo.ts",
+    "db:bootstrap-owner": "npm run db:bootstrap-owner --workspace @aios/data",
+    "openapi:validate": "tsx tools/check_openapi_routes.ts",
+    "postinstall": "npm run db:generate",
+    "check:bundle": "node tools/check_client_bundle.mjs",
+    "check": "npm run db:validate && npm run openapi:validate && npm run lint && npm run typecheck && npm run test && npm run build && npm run check:bundle",
+    "docs:data-dictionary": "python tools/generate_data_dictionary.py",
+    "docs:validate": "python tools/validate_package.py"
+  },
+  "engines": {
+    "node": ">=20.9.0",
+    "npm": ">=10.0.0"
+  }
+}
